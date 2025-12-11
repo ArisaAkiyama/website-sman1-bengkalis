@@ -99,33 +99,33 @@ Website resmi Sekolah Menengah Atas Negeri 1 Bengkalis, Riau.
 
 ## 📸 Screenshot
 
-### Halaman Utama
-![Homepage](screenshots/Screenshot%202025-12-11%20231852.png)
 
-### Berita & Pengumuman
-![Berita](screenshots/Screenshot%202025-12-11%20231918.png)
+![](screenshots/Screenshot%202025-12-11%20231852.png)
 
-### Prestasi Siswa
-![Prestasi](screenshots/Screenshot%202025-12-11%20231935.png)
 
-### Ekstrakurikuler
-![Ekstrakurikuler](screenshots/Screenshot%202025-12-11%20231958.png)
+![](screenshots/Screenshot%202025-12-11%20231918.png)
 
-### Galeri Foto
-![Galeri](screenshots/Screenshot%202025-12-11%20232020.png)
 
-### Halaman Kontak
-![Kontak](screenshots/Screenshot%202025-12-11%20232044.png)
+![](screenshots/Screenshot%202025-12-11%20231935.png)
 
-### Login Admin
-![Login](screenshots/Screenshot%202025-12-11%20232106.png)
 
-### Admin Panel
-![Admin Panel](screenshots/Screenshot%202025-12-11%20232135.png)
+![](screenshots/Screenshot%202025-12-11%20231958.png)
 
-![Admin Pengumuman](screenshots/Screenshot%202025-12-11%20232144.png)
 
-![Admin Pesan](screenshots/Screenshot%202025-12-11%20232201.png)
+![](screenshots/Screenshot%202025-12-11%20232020.png)
+
+
+![](screenshots/Screenshot%202025-12-11%20232044.png)
+
+
+![](screenshots/Screenshot%202025-12-11%20232106.png)
+
+
+![](screenshots/Screenshot%202025-12-11%20232135.png)
+
+![](screenshots/Screenshot%202025-12-11%20232144.png)
+
+![](screenshots/Screenshot%202025-12-11%20232201.png)
 
 ---
 
@@ -137,7 +137,7 @@ Copyright © 2025 SMAN 1 Bengkalis. All rights reserved.
 
 ## 👨‍💻 Kontributor
 
-- Developer: [Nama Anda]
+- Developer: [ArisaAkiyama]
 
 ---
 

@@ -1,0 +1,27 @@
+# File yang tidak boleh diupload ke GitHub
+
+# ===== SENSITIF - WAJIB EXCLUDE =====
+setup_admin.php
+koneksi.php
+
+# ===== FOLDER UPLOADS =====
+uploads/*
+!uploads/.gitkeep
+
+# ===== SYSTEM FILES =====
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+*.tmp
+
+# ===== IDE & EDITOR =====
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ===== OS FILES =====
+*.swp
+*.swo
+*~

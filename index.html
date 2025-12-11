@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMAN 1 Bengkalis</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome (for icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header Section -->
+    <header class="main-header">
+        <div class="top-bar">
+            <div class="container">
+                <div class="top-contact">
+                    <span><i class="fas fa-phone-alt"></i> (0766) 21234</span>
+                    <span><i class="fas fa-envelope"></i> info@sman1bengkalis.sch.id</span>
+                </div>
+                <div class="top-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <img src="header_logo.png" alt="Logo SMAN 1 Bengkalis" class="logo-img">
+                    <div class="logo-text">
+                        <h1>SMAN 1 Bengkalis</h1>
+                        <small>Unggul dalam Prestasi, Berkarakter Islami</small>
+                    </div>
+                </a>
+
+                <button class="menu-toggle" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li class="dropdown">
+                        <a href="#">Profile <i class="fas fa-chevron-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="profile.html">Sambutan</a></li>
+                            <li><a href="karyawan.html">Guru & Karyawan</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="news.php">Berita</a></li>
+                    <li class="dropdown">
+                        <a href="#">Layanan <i class="fas fa-chevron-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Perpustakaan Digital</a></li>
+                            <li><a href="#">Recruitment</a></li>
+                            <li><a href="#">PPDB</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">Galeri <i class="fas fa-chevron-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="foto.html">Foto</a></li>
+                            <li><a href="prestasi.html">Prestasi</a></li>
+                            <li><a href="ekstrakurikuler.html">Ekstrakurikuler</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="contact.html">Kontak</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Layout -->
+    <div class="container main-layout">
+
+        <!-- Sidebar Left (News Widget) -->
+        <aside class="sidebar-wrapper">
+            <div class="widget news-widget">
+                <h3 class="widget-title">Berita Terbaru</h3>
+                <ul class="recent-news-list">
+                    <li>
+                        <a href="#">Pelaksanaan Ujian Semester Ganjil TA 2025/2026</a>
+                        <span class="date">10 Des 2025</span>
+                    </li>
+                    <li>
+                        <a href="#">Prestasi Siswa di Olimpiade Sains Nasional</a>
+                        <span class="date">08 Des 2025</span>
+                    </li>
+                    <li>
+                        <a href="#">Kunjungan Kerja Dinas Pendidikan</a>
+                        <span class="date">05 Des 2025</span>
+                    </li>
+                </ul>
+                <a href="news.html" class="btn-text">Lihat Semua <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content-wrapper">
+
+            <!-- Hero / Welcome (Implicit) -->
+            <section class="hero-section" id="hero-slider">
+                <button class="slider-btn prev-btn"><i class="fa fa-angle-left"></i></button>
+                <div class="hero-content">
+                    <h2>Selamat Datang di SMAN 1 Bengkalis</h2>
+                    <p>Mewujudkan Generasi Emas yang Berakhlakul Karimah</p>
+                    <a href="#" class="btn-primary">Jelajahi Profil</a>
+                </div>
+                <button class="slider-btn next-btn"><i class="fa fa-angle-right"></i></button>
+            </section>
+
+            <!-- Core Values Section -->
+            <section class="section values-section">
+                <div class="values-grid">
+                    <!-- Value 1 -->
+                    <div class="value-card">
+                        <img src="school_logo.png" alt="Logo" class="value-icon">
+                        <h3>Integritas</h3>
+                    </div>
+                    <!-- Value 2 -->
+                    <div class="value-card">
+                        <img src="school_logo.png" alt="Logo" class="value-icon">
+                        <h3>Profesionalitas</h3>
+                    </div>
+                    <!-- Value 3 -->
+                    <div class="value-card">
+                        <img src="school_logo.png" alt="Logo" class="value-icon">
+                        <h3>Inovasi</h3>
+                    </div>
+                    <!-- Value 4 -->
+                    <div class="value-card">
+                        <img src="school_logo.png" alt="Logo" class="value-icon">
+                        <h3>Tanggung jawab</h3>
+                    </div>
+                    <!-- Value 5 -->
+                    <div class="value-card">
+                        <img src="school_logo.png" alt="Logo" class="value-icon">
+                        <h3>Keteladanan</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Prestasi Section -->
+            <section class="section achievement-section">
+                <div class="section-header">
+                    <h2 class="section-title">Prestasi Siswa</h2>
+                    <a href="#" class="btn-primary">Lihat Semua</a>
+                </div>
+                <div class="achievement-grid">
+                    <article class="achievement-item">
+                        <div class="ach-content">
+                            <div class="meta">
+                                <span class="date"><i class="far fa-calendar-alt"></i> 13 Jun 2025</span>
+                                <span class="views"><i class="far fa-eye"></i> 124</span>
+                            </div>
+                            <h3><a href="#">Juara 1 Lomba Pidato Bahasa Arab Tingkat Provinsi</a></h3>
+                            <p>Siswa SMAN 1 Bengkalis kembali menorehkan prestasi gemilang di ajang kompetisi bahasa...
+                            </p>
+                            <a href="#" class="read-more">Selengkapnya <i class="fas fa-angle-double-right"></i></a>
+                        </div>
+                    </article>
+                    <article class="achievement-item">
+                        <div class="ach-content">
+                            <div class="meta">
+                                <span class="date"><i class="far fa-calendar-alt"></i> 20 Mei 2025</span>
+                                <span class="views"><i class="far fa-eye"></i> 89</span>
+                            </div>
+                            <h3><a href="#">Medali Perak Kompetisi Sains Madrasah (KSM)</a></h3>
+                            <p>Delegasi sekolah berhasil membawa pulang medali perak dalam bidang Matematika
+                                Terintegrasi...</p>
+                            <a href="#" class="read-more">Selengkapnya <i class="fas fa-angle-double-right"></i></a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- News & Info Section -->
+            <section class="section news-section">
+                <div class="section-header">
+                    <h2 class="section-title">Berita dan Informasi</h2>
+                    <a href="news.html" class="btn-primary">Lihat Semua</a>
+                </div>
+                <div class="news-grid">
+                    <!-- News Item 1 -->
+                    <article class="news-card">
+                        <div class="news-thumb">
+                            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                                alt="News 1">
+                        </div>
+                        <div class="news-content">
+                            <div class="meta">
+                                <span class="date"><i class="far fa-calendar-alt"></i> 05 Des 2025</span>
+                                <span class="views"><i class="far fa-eye"></i> 45</span>
+                            </div>
+                            <h3><a href="#">Peringatan Hari Guru Nasional 2025</a></h3>
+                            <a href="#" class="read-more">Selengkapnya <i class="fas fa-angle-double-right"></i></a>
+                        </div>
+                    </article>
+                    <!-- News Item 2 -->
+                    <article class="news-card">
+                        <div class="news-thumb">
+                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                                alt="News 2">
+                        </div>
+                        <div class="news-content">
+                            <div class="meta">
+                                <span class="date"><i class="far fa-calendar-alt"></i> 01 Des 2025</span>
+                                <span class="views"><i class="far fa-eye"></i> 112</span>
+                            </div>
+                            <h3><a href="#">Sosialisasi Anti Perundungan di Lingkungan Sekolah</a></h3>
+                            <a href="#" class="read-more">Selengkapnya <i class="fas fa-angle-double-right"></i></a>
+                        </div>
+                    </article>
+                    <!-- News Item 3 -->
+                    <article class="news-card">
+                        <div class="news-thumb">
+                            <img src="https://images.unsplash.com/photo-1577896335477-285850629163?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                                alt="News 3">
+                        </div>
+                        <div class="news-content">
+                            <div class="meta">
+                                <span class="date"><i class="far fa-calendar-alt"></i> 28 Nov 2025</span>
+                                <span class="views"><i class="far fa-eye"></i> 78</span>
+                            </div>
+                            <h3><a href="#">Kegiatan Bakti Sosial OSIS ke Panti Asuhan</a></h3>
+                            <a href="#" class="read-more">Selengkapnya <i class="fas fa-angle-double-right"></i></a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container footer-grid">
+
+            <!-- Footer Brand -->
+            <div class="footer-col brand-col">
+                <img src="footer_logo.png" alt="Logo SMAN 1 Bengkalis" class="footer-logo">
+                <p class="tagline">"Giat, Edukatif, Motifatif, Inofatif, Lues, Agamis, Nyaman, Gesit"</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <!-- Footer News -->
+            <div class="footer-col news-col">
+                <h3>Berita Terbaru</h3>
+                <ul class="footer-news-list">
+                    <li>
+                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=60"
+                            alt="Thumb">
+                        <div class="fn-content">
+                            <span class="date">05 Des 2025</span>
+                            <a href="#">MAN 3 Pekanbaru Salurkan Donasi...</a>
+                            <span class="views"><i class="far fa-eye"></i> 32</span>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=60"
+                            alt="Thumb">
+                        <div class="fn-content">
+                            <span class="date">01 Des 2025</span>
+                            <a href="#">Gelar Sumatif Akhir Semester...</a>
+                            <span class="views"><i class="far fa-eye"></i> 60</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Footer Contact -->
+            <div class="footer-col contact-col">
+                <h3>Hubungi Kami</h3>
+                <address>
+                    <p>Jl. Lembaga, Senggoro, Kec. Bengkalis,<br>Kab. Bengkalis, Riau 28711</p>
+                    <p><i class="fas fa-phone-alt"></i> (0766) 21234</p>
+                    <p><i class="fas fa-envelope"></i> info@sman1bengkalis.sch.id</p>
+                </address>
+                <br>
+                <p>&copy; 2025 SMAN 1 Bengkalis. All Right Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

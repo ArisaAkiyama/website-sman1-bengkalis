@@ -1,0 +1,121 @@
+/* ========================================
+   Floating Action Button (FAB) Styles
+   index.php FAB component
+   ======================================== */
+
+.fab-container {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 9999;
+}
+
+.fab-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #F5A623, #F7B731);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(245, 166, 35, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.fab-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(245, 166, 35, 0.5);
+}
+
+.fab-button i {
+    font-size: 1.5rem;
+    color: white;
+    position: absolute;
+    transition: all 0.3s ease;
+}
+
+.fab-button .fa-times {
+    opacity: 0;
+    transform: rotate(-90deg);
+}
+
+.fab-container.active .fab-button .fa-comments {
+    opacity: 0;
+    transform: rotate(90deg);
+}
+
+.fab-container.active .fab-button .fa-times {
+    opacity: 1;
+    transform: rotate(0);
+}
+
+/* FAB Options */
+.fab-options {
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.fab-container.active .fab-options {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.fab-option {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: white;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.fab-option:hover {
+    transform: scale(1.15);
+}
+
+.fab-option i {
+    font-size: 1.3rem;
+}
+
+.fab-email {
+    background: linear-gradient(135deg, #004029, #006644);
+}
+
+.fab-whatsapp {
+    background: linear-gradient(135deg, #25D366, #128C7E);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fab-container {
+        bottom: 20px;
+        left: 20px;
+    }
+
+    .fab-button {
+        width: 55px;
+        height: 55px;
+    }
+
+    .fab-option {
+        width: 45px;
+        height: 45px;
+    }
+}

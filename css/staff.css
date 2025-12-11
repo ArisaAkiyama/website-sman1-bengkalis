@@ -1,0 +1,57 @@
+/* ========================================
+   Staff/Karyawan Page Styles
+   karyawan.php specific styles
+   ======================================== */
+
+.staff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+}
+
+.staff-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.staff-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.staff-card img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+}
+
+.staff-info {
+    padding: 2rem;
+    text-align: center;
+}
+
+.staff-info h3 {
+    font-size: 1.8rem;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.staff-info p {
+    font-size: 1.4rem;
+    color: var(--color-gray-500);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .staff-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+
+    .staff-card img {
+        height: 220px;
+    }
+}

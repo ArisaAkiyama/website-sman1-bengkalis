@@ -99,7 +99,33 @@ Website resmi Sekolah Menengah Atas Negeri 1 Bengkalis, Riau.
 
 ## 📸 Screenshot
 
-> *Tambahkan screenshot website di sini*
+### Halaman Utama
+![Homepage](screenshots/Screenshot%202025-12-11%20231852.png)
+
+### Berita & Pengumuman
+![Berita](screenshots/Screenshot%202025-12-11%20231918.png)
+
+### Prestasi Siswa
+![Prestasi](screenshots/Screenshot%202025-12-11%20231935.png)
+
+### Ekstrakurikuler
+![Ekstrakurikuler](screenshots/Screenshot%202025-12-11%20231958.png)
+
+### Galeri Foto
+![Galeri](screenshots/Screenshot%202025-12-11%20232020.png)
+
+### Halaman Kontak
+![Kontak](screenshots/Screenshot%202025-12-11%20232044.png)
+
+### Login Admin
+![Login](screenshots/Screenshot%202025-12-11%20232106.png)
+
+### Admin Panel
+![Admin Panel](screenshots/Screenshot%202025-12-11%20232135.png)
+
+![Admin Pengumuman](screenshots/Screenshot%202025-12-11%20232144.png)
+
+![Admin Pesan](screenshots/Screenshot%202025-12-11%20232201.png)
 
 ---
 

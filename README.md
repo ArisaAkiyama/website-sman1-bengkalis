@@ -20,12 +20,22 @@ Website resmi Sekolah Menengah Atas Negeri 1 Bengkalis, Riau.
 - 📸 Galeri Foto
 - 👨‍🏫 Profil Guru & Staff
 - 📞 Halaman Kontak dengan form pesan
+- 📚 **Perpustakaan Digital** - Koleksi e-book dengan pencarian
 
 ### Admin Panel
-- 📊 Dashboard admin dengan tab navigation
+- 📊 Dashboard dengan statistik lengkap
+- 🎛️ Sidebar navigation dengan collapsible sections
 - ✏️ CRUD Berita, Prestasi, Ekskul, Foto, Pengumuman
+- 📚 **Manajemen Perpustakaan** - Upload buku, cover, dan file PDF
 - 📬 Inbox pesan dari pengunjung
-- 📎 Upload gambar dan file PDF
+- 📎 Styled upload boxes untuk gambar dan PDF
+
+### Perpustakaan Digital
+- 🔍 Pencarian berdasarkan judul, pengarang, kategori
+- 📂 7 kategori buku (Novel, Pendidikan, Sains, dll)
+- 📖 Baca online atau download PDF
+- 📊 Statistik buku, pengarang, dan pembaca
+- ⭐ Buku populer berdasarkan views
 
 ### Keamanan
 - 🔐 Login dengan password hashing (bcrypt)
@@ -46,14 +56,10 @@ Website resmi Sekolah Menengah Atas Negeri 1 Bengkalis, Riau.
 
 1. **Clone repository**
    ```bash
-   git clone https://github.com/username/sman1bengkalis.git
+   git clone https://github.com/ArisaAkiyama/website-sman1-bengkalis.git
    ```
 
-2. **Import database**
-   - Buat database baru di phpMyAdmin
-   - Import file SQL (jika ada) atau tabel akan dibuat otomatis
-
-3. **Konfigurasi database**
+2. **Konfigurasi database**
    - Buat file `koneksi.php`:
    ```php
    <?php
@@ -64,68 +70,84 @@ Website resmi Sekolah Menengah Atas Negeri 1 Bengkalis, Riau.
    ?>
    ```
 
-4. **Setup admin user**
-   - Buat file `setup_admin.php`:
-   ```php
-   <?php
-   include 'koneksi.php';
-   $username = 'admin';
-   $password = password_hash('password_anda', PASSWORD_BCRYPT);
-   // ... (lihat dokumentasi)
-   ?>
-   ```
+3. **Setup admin user**
    - Jalankan di browser: `http://localhost/project/setup_admin.php`
    - **HAPUS file setelah selesai!**
 
-5. **Akses website**
+4. **Akses website**
    - Frontend: `http://localhost/project/`
+   - Perpustakaan: `http://localhost/project/perpustakaan.php`
    - Admin: `http://localhost/project/login.php`
+
+> 💡 **Catatan:** Tabel database akan dibuat otomatis saat pertama kali diakses.
 
 ---
 
 ## 📁 Struktur Folder
 
 ```
-├── css/           # File stylesheet
-├── js/            # File JavaScript
-├── uploads/       # Folder upload gambar/PDF
-├── index.php      # Halaman utama
-├── login.php      # Halaman login admin
-├── input_berita.php  # Admin panel
-└── ...
+├── css/
+│   ├── styles.css          # Stylesheet utama
+│   ├── admin.css           # Stylesheet admin panel
+│   └── perpustakaan.css    # Stylesheet perpustakaan
+├── js/
+│   ├── script.js           # JavaScript utama
+│   └── perpustakaan.js     # JavaScript perpustakaan
+├── uploads/                # Folder upload gambar/PDF
+├── screenshots/            # Screenshot untuk README
+├── index.php               # Halaman utama
+├── perpustakaan.php        # Perpustakaan digital
+├── login.php               # Halaman login admin
+├── input_berita.php        # Admin panel
+├── hapus_data.php          # Handler hapus data
+├── koneksi.php             # Konfigurasi database
+└── setup_admin.php         # Setup user admin
 ```
 
 ---
 
 ## 📸 Screenshot
 
-
+### Halaman Utama
 ![](screenshots/Screenshot%202025-12-11%20231852.png)
 
-
+### Berita & Pengumuman
 ![](screenshots/Screenshot%202025-12-11%20231918.png)
 
-
+### Galeri & Konten
 ![](screenshots/Screenshot%202025-12-11%20231935.png)
 
-
+### Prestasi
 ![](screenshots/Screenshot%202025-12-11%20231958.png)
 
-
+### Footer
 ![](screenshots/Screenshot%202025-12-11%20232020.png)
 
-
+### Halaman Kontak
 ![](screenshots/Screenshot%202025-12-11%20232044.png)
 
-
+### Admin Dashboard
 ![](screenshots/Screenshot%202025-12-11%20232106.png)
 
-
+### Admin Panel - Manajemen Konten
 ![](screenshots/Screenshot%202025-12-11%20232135.png)
 
 ![](screenshots/Screenshot%202025-12-11%20232144.png)
 
+### Pesan Masuk
 ![](screenshots/Screenshot%202025-12-11%20232201.png)
+
+---
+
+## 🔄 Changelog
+
+Lihat [CHANGELOG.md](CHANGELOG.md) untuk daftar perubahan lengkap.
+
+### v1.2.0 (2025-12-12)
+- ✨ Perpustakaan Digital dengan database integration
+- ✨ Collapsible sidebar navigation
+- ✨ Styled upload boxes
+- 🐛 Mobile menu button visibility fix
 
 ---
 
@@ -137,7 +159,7 @@ Copyright © 2025 SMAN 1 Bengkalis. All rights reserved.
 
 ## 👨‍💻 Kontributor
 
-- Developer: [ArisaAkiyama]
+- Developer: [ArisaAkiyama](https://github.com/ArisaAkiyama)
 
 ---
 

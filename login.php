@@ -69,8 +69,8 @@ if (isset($_POST['login'])) {
                     $_SESSION['login_time'] = time();
                     $_SESSION['ip_address'] = $_SERVER['REMOTE_ADDR'];
                     
-                    // Redirect to admin panel
-                    header("Location: input_berita.php");
+                    // Redirect to admin panel dashboard
+                    header("Location: input_berita.php?page=dashboard");
                     exit;
                 } else {
                     // Failed login - increment attempts

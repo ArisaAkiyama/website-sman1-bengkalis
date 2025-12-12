@@ -58,6 +58,24 @@ $create_pengumuman = "CREATE TABLE IF NOT EXISTS pengumuman (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
 mysqli_query($koneksi, $create_pengumuman);
 
+// Auto-create buku table if not exists (Perpustakaan)
+$create_buku = "CREATE TABLE IF NOT EXISTS buku (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    judul VARCHAR(255) NOT NULL,
+    pengarang VARCHAR(255) NOT NULL,
+    kategori VARCHAR(100) DEFAULT NULL,
+    deskripsi TEXT,
+    cover VARCHAR(255) DEFAULT NULL,
+    file_buku VARCHAR(255) DEFAULT NULL,
+    tahun_terbit INT(4) DEFAULT NULL,
+    penerbit VARCHAR(255) DEFAULT NULL,
+    view_count INT DEFAULT 0,
+    download_count INT DEFAULT 0,
+    tanggal_upload DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+mysqli_query($koneksi, $create_buku);
+
 // Handle pesan actions
 if (isset($_GET['mark_read']) && is_numeric($_GET['mark_read'])) {
     mysqli_query($koneksi, "UPDATE pesan SET status='dibaca' WHERE id=".(int)$_GET['mark_read']);
@@ -77,8 +95,8 @@ if (isset($_GET['delete_all_pesan'])) {
     header('Location: input_berita.php?page=pesan&success=bulk_delete'); exit;
 }
 
-// Menentukan halaman aktif (default: berita)
-$page = isset($_GET['page']) ? $_GET['page'] : 'berita';
+// Menentukan halaman aktif (default: dashboard)
+$page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 $aksi = isset($_GET['aksi']) ? $_GET['aksi'] : '';
 $id_edit = isset($_GET['id']) ? $_GET['id'] : '';
 
@@ -144,8 +162,8 @@ if (isset($_POST['simpan'])) {
     if ($upload_ok) {
         if ($status_ops == 'tambah') {
         // === INSERT ===
-        // Skip file requirement for pengumuman (lampiran is optional)
-        if ($nama_file == '' && $page != 'pengumuman') {
+        // Skip file requirement for pengumuman and perpustakaan (optional files)
+        if ($nama_file == '' && $page != 'pengumuman' && $page != 'perpustakaan') {
              echo "<script>alert('Harap pilih gambar untuk data baru.');</script>";
         } else {
             if ($page == 'berita') {
@@ -164,6 +182,21 @@ if (isset($_POST['simpan'])) {
                 $judul = $_POST['judul']; $isi = $_POST['isi'];
                 $prioritas = isset($_POST['prioritas']) ? $_POST['prioritas'] : 'normal';
                 $query = "INSERT INTO pengumuman (judul, isi, prioritas, lampiran) VALUES ('$judul', '$isi', '$prioritas', '$gambar_db')";
+            } elseif ($page == 'perpustakaan') {
+                $judul = $_POST['judul']; 
+                $pengarang = mysqli_real_escape_string($koneksi, $_POST['pengarang']);
+                $kategori = mysqli_real_escape_string($koneksi, $_POST['kategori']);
+                $deskripsi = mysqli_real_escape_string($koneksi, $_POST['isi']);
+                $tahun_terbit = isset($_POST['tahun_terbit']) ? (int)$_POST['tahun_terbit'] : 'NULL';
+                $penerbit = mysqli_real_escape_string($koneksi, $_POST['penerbit']);
+                // Handle file_buku (PDF) separately
+                $file_buku_db = '';
+                if (isset($_FILES['file_buku']) && $_FILES['file_buku']['error'] == 0) {
+                    $file_buku_name = time() . '_' . basename($_FILES['file_buku']['name']);
+                    move_uploaded_file($_FILES['file_buku']['tmp_name'], 'uploads/' . $file_buku_name);
+                    $file_buku_db = $file_buku_name;
+                }
+                $query = "INSERT INTO buku (judul, pengarang, kategori, deskripsi, cover, file_buku, tahun_terbit, penerbit) VALUES ('$judul', '$pengarang', '$kategori', '$deskripsi', '$gambar_db', '$file_buku_db', $tahun_terbit, '$penerbit')";
             }
             
             $insert = mysqli_query($koneksi, $query);
@@ -192,6 +225,21 @@ if (isset($_POST['simpan'])) {
             $judul = $_POST['judul']; $isi = $_POST['isi'];
             $prioritas = isset($_POST['prioritas']) ? $_POST['prioritas'] : 'normal';
             $query = "UPDATE pengumuman SET judul='$judul', isi='$isi', prioritas='$prioritas', lampiran='$gambar_db' WHERE id='$id_laman'";
+        } elseif ($page == 'perpustakaan') {
+            $judul = $_POST['judul']; 
+            $pengarang = mysqli_real_escape_string($koneksi, $_POST['pengarang']);
+            $kategori = mysqli_real_escape_string($koneksi, $_POST['kategori']);
+            $deskripsi = mysqli_real_escape_string($koneksi, $_POST['isi']);
+            $tahun_terbit = isset($_POST['tahun_terbit']) && $_POST['tahun_terbit'] != '' ? (int)$_POST['tahun_terbit'] : 'NULL';
+            $penerbit = mysqli_real_escape_string($koneksi, $_POST['penerbit']);
+            // Handle file_buku (PDF) update
+            $file_buku_update = '';
+            if (isset($_FILES['file_buku']) && $_FILES['file_buku']['error'] == 0) {
+                $file_buku_name = time() . '_' . basename($_FILES['file_buku']['name']);
+                move_uploaded_file($_FILES['file_buku']['tmp_name'], 'uploads/' . $file_buku_name);
+                $file_buku_update = ", file_buku='$file_buku_name'";
+            }
+            $query = "UPDATE buku SET judul='$judul', pengarang='$pengarang', kategori='$kategori', deskripsi='$deskripsi', cover='$gambar_db', tahun_terbit=$tahun_terbit, penerbit='$penerbit' $file_buku_update WHERE id='$id_laman'";
         }
         
         $update = mysqli_query($koneksi, $query);
@@ -215,37 +263,116 @@ if (isset($_POST['simpan'])) {
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Admin Styles -->
-    <link rel="stylesheet" href="css/admin.css?v=1">
+<link rel="stylesheet" href="css/admin.css?v=6">
 </head>
 <body>
 
-<header class="admin-header">
-    <div class="container header-content">
-        <div class="brand">
-            <h1><i class="fas fa-graduation-cap"></i> Admin<span>Panel</span></h1>
+<?php $unread = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM pesan WHERE status='belum_dibaca'"))['c']; ?>
+
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-btn" id="mobileMenuBtn">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="?page=dashboard" class="sidebar-brand">
+            <i class="fas fa-graduation-cap"></i>
+            <div>
+                <h1>Admin Panel</h1>
+                <span>SMAN 1 Bengkalis</span>
+            </div>
+        </a>
+    </div>
+    
+    <nav class="sidebar-nav">
+        <!-- Menu Utama Section -->
+        <div class="nav-section open">
+            <div class="nav-section-title" onclick="toggleNavSection(this)">
+                <span><i class="fas fa-th-large"></i> Menu Utama</span>
+                <i class="fas fa-chevron-down nav-section-arrow"></i>
+            </div>
+            <div class="nav-section-links">
+                <a href="?page=dashboard" class="<?php if($page=='dashboard') echo 'active'; ?>">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="?page=berita" class="<?php if($page=='berita') echo 'active'; ?>">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="?page=prestasi" class="<?php if($page=='prestasi') echo 'active'; ?>">
+                    <i class="fas fa-trophy"></i>
+                    <span>Prestasi</span>
+                </a>
+                <a href="?page=ekskul" class="<?php if($page=='ekskul') echo 'active'; ?>">
+                    <i class="fas fa-basketball-ball"></i>
+                    <span>Ekstrakurikuler</span>
+                </a>
+            </div>
         </div>
-        <div class="user-actions">
-            <span class="user-info"><i class="fas fa-user"></i> <?php echo $_SESSION['username']; ?></span>
-            <a href="index.php" class="btn-view" target="_blank"><i class="fas fa-external-link-alt"></i> Lihat Web</a>
+        
+        <!-- Konten Section -->
+        <div class="nav-section open">
+            <div class="nav-section-title" onclick="toggleNavSection(this)">
+                <span><i class="fas fa-folder-open"></i> Konten</span>
+                <i class="fas fa-chevron-down nav-section-arrow"></i>
+            </div>
+            <div class="nav-section-links">
+                <a href="?page=foto" class="<?php if($page=='foto') echo 'active'; ?>">
+                    <i class="fas fa-images"></i>
+                    <span>Galeri Foto</span>
+                </a>
+                <a href="?page=pengumuman" class="<?php if($page=='pengumuman') echo 'active'; ?>">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Pengumuman</span>
+                </a>
+                <a href="?page=perpustakaan" class="<?php if($page=='perpustakaan') echo 'active'; ?>">
+                    <i class="fas fa-book"></i>
+                    <span>Perpustakaan</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Komunikasi Section -->
+        <div class="nav-section open">
+            <div class="nav-section-title" onclick="toggleNavSection(this)">
+                <span><i class="fas fa-comments"></i> Komunikasi</span>
+                <i class="fas fa-chevron-down nav-section-arrow"></i>
+            </div>
+            <div class="nav-section-links">
+                <a href="?page=pesan" class="<?php if($page=='pesan') echo 'active'; ?>">
+                    <i class="fas fa-envelope"></i>
+                    <span>Pesan Masuk</span>
+                    <?php if($unread > 0): ?><span class="nav-badge"><?php echo $unread; ?></span><?php endif; ?>
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="sidebar-footer">
+        <div class="sidebar-user">
+            <div class="sidebar-user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="sidebar-user-info">
+                <strong><?php echo $_SESSION['username']; ?></strong>
+                <span>Administrator</span>
+            </div>
+        </div>
+        <div class="sidebar-actions">
+            <a href="index.php" target="_blank" class="btn-view-site"><i class="fas fa-external-link-alt"></i> Web</a>
             <a href="logout.php" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Keluar</a>
         </div>
     </div>
-</header>
+</aside>
 
-<div class="container">
-    
-    <!-- Navigation Tabs -->
-    <div class="nav-scroller">
-        <nav class="nav-tabs">
-            <a href="?page=berita" class="nav-link <?php if($page=='berita') echo 'active'; ?>"><i class="fas fa-newspaper"></i> Berita</a>
-            <a href="?page=prestasi" class="nav-link <?php if($page=='prestasi') echo 'active'; ?>"><i class="fas fa-trophy"></i> Prestasi</a>
-            <a href="?page=ekskul" class="nav-link <?php if($page=='ekskul') echo 'active'; ?>"><i class="fas fa-basketball-ball"></i> Ekskul</a>
-            <a href="?page=foto" class="nav-link <?php if($page=='foto') echo 'active'; ?>"><i class="fas fa-images"></i> Foto</a>
-            <a href="?page=pengumuman" class="nav-link <?php if($page=='pengumuman') echo 'active'; ?>"><i class="fas fa-bullhorn"></i> Pengumuman</a>
-            <?php $unread = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM pesan WHERE status='belum_dibaca'"))['c']; ?>
-            <a href="?page=pesan" class="nav-link <?php if($page=='pesan') echo 'active'; ?>"><i class="fas fa-envelope"></i> Pesan <?php if($unread > 0): ?><span class="nav-badge"><?php echo $unread; ?></span><?php endif; ?></a>
-        </nav>
-    </div>
+<!-- MAIN CONTENT -->
+<main class="main-content">
     
     <!-- Success Alert -->
     <?php if(isset($_GET['success'])): ?>
@@ -261,7 +388,153 @@ if (isset($_POST['simpan'])) {
         ?>
     </div>
     <?php endif; ?>
-    <?php if($page == 'pesan'): ?>
+    <?php if($page == 'dashboard'): ?>
+    <!-- DASHBOARD PAGE -->
+    <?php
+    // Get statistics
+    $stat_berita = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM berita"))['c'];
+    $stat_prestasi = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM prestasi"))['c'];
+    $stat_ekskul = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM ekstrakurikuler"))['c'];
+    $stat_foto = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM foto"))['c'];
+    $stat_pengumuman = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM pengumuman"))['c'];
+    $stat_pesan = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM pesan"))['c'];
+    $stat_pesan_unread = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM pesan WHERE status='belum_dibaca'"))['c'];
+    ?>
+    
+    <div class="card" style="margin-top:0; background: linear-gradient(135deg, #004029, #006644); color: white;">
+        <h2 style="color: white; border-left-color: #d4af37; margin-bottom: 10px;"><i class="fas fa-chart-line"></i> Dashboard Statistik</h2>
+        <p style="opacity: 0.9; font-size: 1rem;">Selamat datang, <strong><?php echo $_SESSION['username']; ?></strong>! Berikut ringkasan data website.</p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 25px;">
+        
+        <!-- Berita -->
+        <div style="background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 20px; transition: all 0.3s; cursor: pointer;" onclick="location.href='?page=berita'">
+            <div style="width: 60px; height: 60px; border-radius: 14px; background: linear-gradient(135deg, #3498db, #2980b9); display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-newspaper" style="font-size: 1.5rem; color: white;"></i>
+            </div>
+            <div>
+                <div style="font-size: 2rem; font-weight: 700; color: #2c3e50;"><?php echo $stat_berita; ?></div>
+                <div style="color: #7f8c8d; font-size: 0.9rem;">Total Berita</div>
+            </div>
+        </div>
+
+        <!-- Prestasi -->
+        <div style="background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 20px; transition: all 0.3s; cursor: pointer;" onclick="location.href='?page=prestasi'">
+            <div style="width: 60px; height: 60px; border-radius: 14px; background: linear-gradient(135deg, #f1c40f, #f39c12); display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-trophy" style="font-size: 1.5rem; color: white;"></i>
+            </div>
+            <div>
+                <div style="font-size: 2rem; font-weight: 700; color: #2c3e50;"><?php echo $stat_prestasi; ?></div>
+                <div style="color: #7f8c8d; font-size: 0.9rem;">Total Prestasi</div>
+            </div>
+        </div>
+
+        <!-- Ekskul -->
+        <div style="background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 20px; transition: all 0.3s; cursor: pointer;" onclick="location.href='?page=ekskul'">
+            <div style="width: 60px; height: 60px; border-radius: 14px; background: linear-gradient(135deg, #e74c3c, #c0392b); display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-basketball-ball" style="font-size: 1.5rem; color: white;"></i>
+            </div>
+            <div>
+                <div style="font-size: 2rem; font-weight: 700; color: #2c3e50;"><?php echo $stat_ekskul; ?></div>
+                <div style="color: #7f8c8d; font-size: 0.9rem;">Total Ekskul</div>
+            </div>
+        </div>
+
+        <!-- Foto -->
+        <div style="background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 20px; transition: all 0.3s; cursor: pointer;" onclick="location.href='?page=foto'">
+            <div style="width: 60px; height: 60px; border-radius: 14px; background: linear-gradient(135deg, #9b59b6, #8e44ad); display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-images" style="font-size: 1.5rem; color: white;"></i>
+            </div>
+            <div>
+                <div style="font-size: 2rem; font-weight: 700; color: #2c3e50;"><?php echo $stat_foto; ?></div>
+                <div style="color: #7f8c8d; font-size: 0.9rem;">Total Foto</div>
+            </div>
+        </div>
+
+        <!-- Pengumuman -->
+        <div style="background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 20px; transition: all 0.3s; cursor: pointer;" onclick="location.href='?page=pengumuman'">
+            <div style="width: 60px; height: 60px; border-radius: 14px; background: linear-gradient(135deg, #1abc9c, #16a085); display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-bullhorn" style="font-size: 1.5rem; color: white;"></i>
+            </div>
+            <div>
+                <div style="font-size: 2rem; font-weight: 700; color: #2c3e50;"><?php echo $stat_pengumuman; ?></div>
+                <div style="color: #7f8c8d; font-size: 0.9rem;">Total Pengumuman</div>
+            </div>
+        </div>
+
+        <!-- Pesan -->
+        <div style="background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 20px; transition: all 0.3s; cursor: pointer;" onclick="location.href='?page=pesan'">
+            <div style="width: 60px; height: 60px; border-radius: 14px; background: linear-gradient(135deg, #004029, #006644); display: flex; align-items: center; justify-content: center; position: relative;">
+                <i class="fas fa-envelope" style="font-size: 1.5rem; color: white;"></i>
+                <?php if($stat_pesan_unread > 0): ?>
+                <span style="position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; font-weight: bold;"><?php echo $stat_pesan_unread; ?></span>
+                <?php endif; ?>
+            </div>
+            <div>
+                <div style="font-size: 2rem; font-weight: 700; color: #2c3e50;"><?php echo $stat_pesan; ?></div>
+                <div style="color: #7f8c8d; font-size: 0.9rem;">Total Pesan</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Recent Activity -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; margin-top: 30px;">
+        
+        <!-- Recent Berita -->
+        <div class="card">
+            <h3 style="font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-newspaper" style="color: #3498db;"></i> Berita Terbaru</h3>
+            <?php $recent_berita = mysqli_query($koneksi, "SELECT * FROM berita ORDER BY id DESC LIMIT 3"); ?>
+            <?php if(mysqli_num_rows($recent_berita) > 0): ?>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <?php while($rb = mysqli_fetch_array($recent_berita)): ?>
+                <li style="padding: 12px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 12px;">
+                    <?php if($rb['gambar']): ?>
+                    <img src="uploads/<?php echo $rb['gambar']; ?>" style="width: 45px; height: 45px; border-radius: 8px; object-fit: cover;">
+                    <?php else: ?>
+                    <div style="width: 45px; height: 45px; border-radius: 8px; background: #eee; display: flex; align-items: center; justify-content: center;"><i class="fas fa-image" style="color: #bbb;"></i></div>
+                    <?php endif; ?>
+                    <div style="flex: 1; overflow: hidden;">
+                        <div style="font-weight: 600; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo $rb['judul']; ?></div>
+                        <div style="font-size: 0.8rem; color: #888;"><?php echo date('d M Y', strtotime($rb['tanggal_buat'])); ?></div>
+                    </div>
+                </li>
+                <?php endwhile; ?>
+            </ul>
+            <?php else: ?>
+            <p style="color: #888; text-align: center; padding: 20px;">Belum ada berita.</p>
+            <?php endif; ?>
+        </div>
+
+        <!-- Recent Pesan -->
+        <div class="card">
+            <h3 style="font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-envelope" style="color: #004029;"></i> Pesan Terbaru</h3>
+            <?php $recent_pesan = mysqli_query($koneksi, "SELECT * FROM pesan ORDER BY tanggal_kirim DESC LIMIT 3"); ?>
+            <?php if(mysqli_num_rows($recent_pesan) > 0): ?>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <?php while($rp = mysqli_fetch_array($recent_pesan)): ?>
+                <li style="padding: 12px 0; border-bottom: 1px solid #eee;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+                        <span style="font-weight: 600; font-size: 0.9rem;"><?php echo $rp['nama']; ?></span>
+                        <?php if($rp['status'] == 'belum_dibaca'): ?>
+                        <span style="background: #e74c3c; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px;">Baru</span>
+                        <?php endif; ?>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo substr($rp['pesan'], 0, 50); ?>...</div>
+                    <div style="font-size: 0.75rem; color: #aaa; margin-top: 5px;"><?php echo date('d M Y H:i', strtotime($rp['tanggal_kirim'])); ?></div>
+                </li>
+                <?php endwhile; ?>
+            </ul>
+            <?php else: ?>
+            <p style="color: #888; text-align: center; padding: 20px;">Belum ada pesan.</p>
+            <?php endif; ?>
+        </div>
+
+    </div>
+
+    <?php elseif($page == 'pesan'): ?>
     <!-- PESAN PAGE -->
     <?php
     // Pagination setup
@@ -409,27 +682,101 @@ if (isset($_POST['simpan'])) {
                 <?php } ?>
 
                 <?php if ($page == 'pengumuman') { ?>
-                <div class="form-group">
-                    <label><i class="fas fa-file-pdf"></i> Lampiran PDF (Opsional)</label>
-                    <input type="file" name="gambar" accept=".pdf,application/pdf">
+                <!-- Styled PDF Upload for Pengumuman -->
+                <div class="form-group" style="background: #fff8f8; padding: 20px; border-radius: 12px; border: 2px dashed #ffcdd2;">
+                    <label style="margin-bottom: 15px; display: block;"><i class="fas fa-file-pdf" style="color: #c62828;"></i> Lampiran PDF <span style="color: #999; font-weight: normal;">(Opsional)</span></label>
+                    <input type="file" name="gambar" accept=".pdf,application/pdf" style="width: 100%;">
                     <?php if($is_edit && $edit_gambar) { ?>
-                        <div style="margin-top:10px; font-size:0.85rem; color:#666;">
-                            <i class="fas fa-file-pdf"></i> Saat ini: <?php echo $edit_gambar; ?>
-                        </div>
+                    <div style="margin-top: 12px; padding: 10px; background: #ffebee; border-radius: 8px; font-size: 0.85rem; color: #c62828;">
+                        <i class="fas fa-file-pdf"></i> File saat ini: <strong><?php echo $edit_gambar; ?></strong>
+                    </div>
                     <?php } ?>
-                    <small style="color:#666; font-size:0.8rem;">Format: PDF, Maksimal 2 MB</small>
+                    <small style="display: block; margin-top: 10px; color: #666;">Format: PDF. Maks 2 MB</small>
                 </div>
-                <?php } else { ?>
-                <div class="form-group">
-                    <label>Gambar</label>
-                    <input type="file" name="gambar" <?php if(!$is_edit) echo "required"; ?>>
+                <?php } elseif ($page != 'perpustakaan') { ?>
+                <!-- Styled Image Upload for Other Pages -->
+                <div class="form-group" style="background: #f8f9fa; padding: 20px; border-radius: 12px; border: 2px dashed #dee2e6;">
+                    <label style="margin-bottom: 15px; display: block;"><i class="fas fa-image" style="color: #004029;"></i> Gambar <?php if(!$is_edit) echo '<span style="color: #e74c3c;">*</span>'; ?></label>
+                    <input type="file" name="gambar" accept="image/*" <?php if(!$is_edit) echo "required"; ?> style="width: 100%;">
                     <?php if($is_edit && $edit_gambar) { ?>
-                        <div style="margin-top:10px; font-size:0.85rem; color:#666;">
-                            <i class="fas fa-image"></i> Saat ini: <?php echo $edit_gambar; ?>
-                        </div>
+                    <div style="margin-top: 12px; padding: 10px; background: #e8f5e9; border-radius: 8px; font-size: 0.85rem; color: #2e7d32;">
+                        <i class="fas fa-check-circle"></i> File saat ini: <strong><?php echo $edit_gambar; ?></strong>
+                    </div>
                     <?php } ?>
-                    <small style="color:red; font-size:0.8rem;">* Maksimal 1 MB</small>
+                    <small style="display: block; margin-top: 10px; color: #666;">Format: JPG, PNG, GIF. Maks 1 MB</small>
                 </div>
+                <?php } ?>
+
+                <?php if ($page == 'perpustakaan') { 
+                    // Get additional fields if editing
+                    $edit_pengarang = ''; $edit_kategori = ''; $edit_tahun = ''; $edit_penerbit = ''; $edit_file_buku = '';
+                    if ($is_edit && $id_edit) {
+                        $bq = mysqli_query($koneksi, "SELECT * FROM buku WHERE id='$id_edit'");
+                        if ($br = mysqli_fetch_assoc($bq)) {
+                            $edit_pengarang = $br['pengarang'];
+                            $edit_kategori = $br['kategori'];
+                            $edit_tahun = $br['tahun_terbit'];
+                            $edit_penerbit = $br['penerbit'];
+                            $edit_file_buku = $br['file_buku'];
+                        }
+                    }
+                ?>
+                
+                <!-- Pengarang -->
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Pengarang</label>
+                    <input type="text" name="pengarang" class="form-control" value="<?php echo $edit_pengarang; ?>" required placeholder="Nama pengarang buku...">
+                </div>
+                
+                <!-- Row: Kategori, Tahun, Penerbit -->
+                <div class="form-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label><i class="fas fa-folder"></i> Kategori</label>
+                        <select name="kategori" class="form-control" style="height: 48px;">
+                            <option value="">-- Pilih Kategori --</option>
+                            <option value="Novel" <?php if($edit_kategori == 'Novel') echo 'selected'; ?>>Novel</option>
+                            <option value="Pendidikan" <?php if($edit_kategori == 'Pendidikan') echo 'selected'; ?>>Pendidikan</option>
+                            <option value="Sains & Teknologi" <?php if($edit_kategori == 'Sains & Teknologi') echo 'selected'; ?>>Sains & Teknologi</option>
+                            <option value="Sejarah" <?php if($edit_kategori == 'Sejarah') echo 'selected'; ?>>Sejarah</option>
+                            <option value="Agama" <?php if($edit_kategori == 'Agama') echo 'selected'; ?>>Agama</option>
+                            <option value="Bahasa" <?php if($edit_kategori == 'Bahasa') echo 'selected'; ?>>Bahasa</option>
+                            <option value="Buku Bacaan" <?php if($edit_kategori == 'Buku Bacaan') echo 'selected'; ?>>Buku Bacaan</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label><i class="fas fa-calendar-alt"></i> Tahun Terbit</label>
+                        <input type="number" name="tahun_terbit" class="form-control" value="<?php echo $edit_tahun; ?>" placeholder="<?php echo date('Y'); ?>" min="1900" max="2100" style="height: 48px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label><i class="fas fa-building"></i> Penerbit</label>
+                        <input type="text" name="penerbit" class="form-control" value="<?php echo $edit_penerbit; ?>" placeholder="Nama penerbit..." style="height: 48px;">
+                    </div>
+                </div>
+                
+                <!-- Row: Cover & File E-Book -->
+                <div class="form-row" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                    <div class="form-group" style="background: #f8f9fa; padding: 20px; border-radius: 12px; border: 2px dashed #dee2e6;">
+                        <label style="margin-bottom: 15px; display: block;"><i class="fas fa-image" style="color: #004029;"></i> Cover Buku <span style="color: #999; font-weight: normal;">(Opsional)</span></label>
+                        <input type="file" name="gambar" accept="image/*" style="width: 100%;">
+                        <?php if($is_edit && $edit_gambar) { ?>
+                        <div style="margin-top: 12px; padding: 10px; background: #e8f5e9; border-radius: 8px; font-size: 0.85rem; color: #2e7d32;">
+                            <i class="fas fa-check-circle"></i> File saat ini: <strong><?php echo $edit_gambar; ?></strong>
+                        </div>
+                        <?php } ?>
+                        <small style="display: block; margin-top: 10px; color: #666;">Format: JPG, PNG, GIF. Maks 1 MB</small>
+                    </div>
+                    <div class="form-group" style="background: #fff8f8; padding: 20px; border-radius: 12px; border: 2px dashed #ffcdd2;">
+                        <label style="margin-bottom: 15px; display: block;"><i class="fas fa-file-pdf" style="color: #c62828;"></i> File E-Book <span style="color: #999; font-weight: normal;">(PDF)</span></label>
+                        <input type="file" name="file_buku" accept=".pdf,application/pdf" style="width: 100%;">
+                        <?php if($is_edit && $edit_file_buku) { ?>
+                        <div style="margin-top: 12px; padding: 10px; background: #ffebee; border-radius: 8px; font-size: 0.85rem; color: #c62828;">
+                            <i class="fas fa-file-pdf"></i> File saat ini: <strong><?php echo $edit_file_buku; ?></strong>
+                        </div>
+                        <?php } ?>
+                        <small style="display: block; margin-top: 10px; color: #666;">Format: PDF. Maks 10 MB</small>
+                    </div>
+                </div>
+                
                 <?php } ?>
 
                 <button type="submit" name="simpan" class="btn-submit">
@@ -463,6 +810,7 @@ if (isset($_POST['simpan'])) {
                         if ($page == 'ekskul') $table_name = "ekstrakurikuler";
                         if ($page == 'foto') $table_name = "foto";
                         if ($page == 'pengumuman') $table_name = "pengumuman";
+                        if ($page == 'perpustakaan') $table_name = "buku";
         
                         $query = mysqli_query($koneksi, "SELECT * FROM $table_name ORDER BY id DESC");
                         
@@ -471,6 +819,7 @@ if (isset($_POST['simpan'])) {
                                 $img_col = 'gambar';
                                 if ($page == 'foto') $img_col = 'file_foto';
                                 if ($page == 'pengumuman') $img_col = 'lampiran';
+                                if ($page == 'perpustakaan') $img_col = 'cover';
                                 $title_col = ($page == 'ekskul') ? 'nama_ekskul' : 'judul';
                         ?>
                         <tr>
@@ -482,6 +831,14 @@ if (isset($_POST['simpan'])) {
                                             <i class="fas fa-file-pdf"></i> PDF
                                         </a>
                                     <?php } else { echo "<span style='color:#999; font-size:0.85rem;'><i class='fas fa-minus-circle'></i> No File</span>"; }
+                                } elseif ($page == 'perpustakaan') {
+                                    if($row['cover']) { ?>
+                                        <img src="uploads/<?php echo $row['cover']; ?>" class="thumb-img">
+                                    <?php } else { ?>
+                                        <div style="width:60px;height:60px;background:linear-gradient(135deg,#004029,#006644);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;">
+                                            <i class="fas fa-book"></i>
+                                        </div>
+                                    <?php } 
                                 } else { 
                                     if($row[$img_col]) { ?>
                                         <img src="uploads/<?php echo $row[$img_col]; ?>" class="thumb-img">
@@ -490,6 +847,12 @@ if (isset($_POST['simpan'])) {
                             </td>
                             <td>
                                 <strong><?php echo $row[$title_col]; ?></strong>
+                                <?php if ($page == 'perpustakaan') { ?>
+                                    <br><small style="color:#666;"><i class="fas fa-user"></i> <?php echo $row['pengarang']; ?></small>
+                                    <?php if($row['file_buku']) { ?>
+                                        <br><a href="uploads/<?php echo $row['file_buku']; ?>" target="_blank" style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; background:#e74c3c; color:white; border-radius:6px; text-decoration:none; font-size:0.75rem; margin-top:5px;"><i class="fas fa-file-pdf"></i> <?php echo $row['kategori'] ?: 'E-Book'; ?></a>
+                                    <?php } ?>
+                                <?php } ?>
                             </td>
                             <td class="action-links">
                                 <a href="input_berita.php?page=<?php echo $page; ?>&aksi=edit&id=<?php echo $row['id']; ?>" class="btn-edit-row">
@@ -514,12 +877,70 @@ if (isset($_POST['simpan'])) {
     </div>
     <?php endif; ?>
 
-</div>
+</main>
 
 <!-- Footer Credit -->
-<footer style="background:linear-gradient(135deg, #004029, #006644); color:white; text-align:center; padding:20px 0; margin-top:40px;">
-    <p style="margin:0; font-size:0.95rem;">&copy; <?php echo date('Y'); ?> SMAN 1 Bengkalis | Admin Panel v1.0</p>
+<footer style="position:fixed; bottom:0; left:220px; right:0; background:linear-gradient(135deg, #004029, #006644); color:white; text-align:center; padding:12px 0; font-size:0.8rem;" id="adminFooter">
+    &copy; <?php echo date('Y'); ?> SMAN 1 Bengkalis | Admin Panel v1.1
 </footer>
+
+<!-- Mobile Menu Toggle Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const footer = document.getElementById('adminFooter');
+    
+    function toggleSidebar() {
+        menuBtn.classList.toggle('active');
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+    }
+    
+    menuBtn.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar);
+    
+    // Close sidebar when clicking a nav link on mobile
+    const navLinks = sidebar.querySelectorAll('a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        });
+    });
+});
+
+// Toggle Nav Section (Collapse/Expand)
+function toggleNavSection(element) {
+    const section = element.parentElement;
+    section.classList.toggle('open');
+    
+    // Save state to localStorage
+    const sectionIndex = Array.from(document.querySelectorAll('.nav-section')).indexOf(section);
+    const openSections = JSON.parse(localStorage.getItem('adminNavSections') || '{}');
+    openSections[sectionIndex] = section.classList.contains('open');
+    localStorage.setItem('adminNavSections', JSON.stringify(openSections));
+}
+
+// Restore nav section states on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('.nav-section');
+    const openSections = JSON.parse(localStorage.getItem('adminNavSections') || '{}');
+    
+    sections.forEach((section, index) => {
+        // If we have a saved state, use it; otherwise keep open
+        if (openSections.hasOwnProperty(index)) {
+            if (openSections[index]) {
+                section.classList.add('open');
+            } else {
+                section.classList.remove('open');
+            }
+        }
+    });
+});
+</script>
 
 </body>
 </html>

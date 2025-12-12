@@ -179,9 +179,9 @@ include 'koneksi.php';
                     <div class="info-icon"><i class="fas fa-user-graduate"></i></div>
                     <span>PPDB Online</span>
                 </a>
-                <a href="#" class="info-item">
+                <a href="perpustakaan.php" class="info-item">
                     <div class="info-icon"><i class="fas fa-book-open"></i></div>
-                    <span>E-Learning</span>
+                    <span>Perpustakaan</span>
                 </a>
                 <a href="#" class="info-item">
                     <div class="info-icon"><i class="fas fa-calendar-check"></i></div>

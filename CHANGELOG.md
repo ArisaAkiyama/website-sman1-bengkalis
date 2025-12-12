@@ -1,5 +1,58 @@
 # 📋 CHANGELOG - Website SMAN 1 Bengkalis
 
+## Version 1.1.0 (12 Desember 2025)
+**Update Admin Panel dengan Sidebar Layout & Dashboard Statistik**
+
+---
+
+### 🎨 Admin Panel Redesign
+
+#### Layout Baru - Sidebar Navigation
+- ✅ Navigasi dipindah ke **sidebar kiri** (dari horizontal tabs)
+- ✅ Sidebar width: 220px (desktop), 260px (mobile)
+- ✅ Menu dikelompokkan dalam kategori:
+  - **Menu Utama**: Dashboard, Berita, Prestasi, Ekskul
+  - **Konten**: Galeri Foto, Pengumuman
+  - **Komunikasi**: Pesan Masuk (dengan badge unread)
+- ✅ User info dengan avatar di footer sidebar
+- ✅ Tombol "Lihat Web" dan "Keluar" di sidebar
+
+#### Dashboard Statistik
+- ✅ 6 kartu statistik: Berita, Prestasi, Ekskul, Foto, Pengumuman, Pesan
+- ✅ Setiap kartu menampilkan total data dan clickable
+- ✅ Badge notifikasi untuk pesan belum dibaca
+- ✅ Tampilan "Recent Activity":
+  - 3 Berita terbaru dengan thumbnail
+  - 3 Pesan terbaru dengan badge "Baru"
+- ✅ Welcome banner dengan nama user
+
+#### Responsive Mobile
+- ✅ Hamburger menu button (☰) di mobile
+- ✅ Sidebar slide-in dengan animasi
+- ✅ Dark overlay saat sidebar terbuka
+- ✅ Auto-close sidebar saat klik menu item
+- ✅ Footer full-width di mobile
+
+---
+
+### 🔧 Perbaikan Lainnya
+
+- ✅ Email FAB menggunakan Gmail Compose URL
+- ✅ Hapus file HTML yang tidak digunakan (7 file)
+- ✅ Hapus folder Website_SMA yang tidak dipakai
+- ✅ Login redirect langsung ke Dashboard (bukan Berita)
+- ✅ File `.gitignore` dan `README.md` untuk GitHub
+
+---
+
+### 📦 Repository GitHub
+
+- ✅ Repository: [github.com/ArisaAkiyama/website-sman1-bengkalis](https://github.com/ArisaAkiyama/website-sman1-bengkalis)
+- ✅ 10 Screenshot terupload
+- ✅ Documentation dengan badges
+
+---
+
 ## Version 1.0.0 (11 Desember 2025)
 **Release pertama website resmi SMAN 1 Bengkalis**
 
@@ -137,15 +190,15 @@ Project Kecil/
 
 ---
 
-### 🚀 Pengembangan Selanjutnya (Roadmap v1.1)
+### 🚀 Pengembangan Selanjutnya (Roadmap v1.2)
 
 - [ ] PPDB Online
-- [ ] Kalender Akademik
+- [ ] Perpustakaan Online/E-Book 
 - [ ] Portal Siswa & Guru
 - [ ] Sistem Polling/Voting
 - [ ] Multi-language support
 - [ ] Captcha untuk form login & kontak
-- [ ] Dashboard statistik admin
+- [x] Dashboard statistik admin ✅
 
 ---
 

@@ -1,9 +1,69 @@
 # 📋 CHANGELOG - Website SMAN 1 Bengkalis
 
-## Version 1.1.0 (12 Desember 2025)
-**Update Admin Panel dengan Sidebar Layout & Dashboard Statistik**
+## Version 1.3.0 (13 Desember 2025)
+**AI Chatbot Integration & Perpustakaan Enhancement**
 
 ---
+
+### 🤖 AI Chatbot (Groq API)
+- ✅ **Chatbot Terintegrasi** di halaman Beranda dan Berita
+- ✅ **Groq API Integration** untuk respons AI cerdas
+- ✅ **Real-time Database Query** - AI membaca data buku, berita, pengumuman langsung dari database
+- ✅ **System Prompt Kustom** - AI hanya menjawab tentang SMAN 1 Bengkalis
+- ✅ **Quick Replies** - Tombol pertanyaan cepat
+- ✅ **FAB Integration** - Tombol chatbot di Floating Action Button
+- ✅ **Error Handling** - Fallback ke FAQ lokal jika API gagal
+- ✅ **Responsive Design** - Tampilan chatbot lebih besar dan mudah dibaca
+
+### 📚 Perpustakaan Digital Enhancement
+- ✅ **Toggle Kategori** - Klik "Semua" untuk expand/collapse daftar kategori
+- ✅ **Filter Kategori Aktif** - Klik Novel/Sejarah/dll langsung filter buku
+- ✅ **Validasi Pencarian** - Notifikasi error jika field kosong saat klik "Cari"
+- ✅ **Subcategory Links** - Link kategori dengan styling hover dan active state
+- ✅ **Case-insensitive Search** - Filter kategori tidak sensitif huruf besar/kecil
+
+### 🔧 Perbaikan Bug
+- ✅ **Fixed:** `e.preventDefault()` di perpustakaan.js memblokir navigasi kategori
+- ✅ **Fixed:** Query kategori sekarang case-insensitive
+
+### 📁 File Baru
+- ✅ `config.php` - Konfigurasi Groq API key dan system prompt
+- ✅ `api/chat.php` - Backend proxy untuk AI chatbot
+- ✅ `js/chatbot.js` - Frontend chatbot logic
+- ✅ `css/chatbot.css` - Styling chatbot
+
+---
+
+## Version 1.2.0 (12 Desember 2025)
+**Perpustakaan Digital dengan Database Integration**
+
+---
+
+### 📚 Perpustakaan Digital (perpustakaan.php)
+- ✅ **Halaman baru** dengan desain modern dan card layout
+- ✅ **Database Integration** - Tabel `buku` dengan auto-create
+- ✅ **Fitur pencarian** - By judul, pengarang, kategori
+- ✅ **7 Kategori buku** - Novel, Pendidikan, Sains & Teknologi, Sejarah, Agama, Bahasa, Buku Bacaan
+- ✅ **Sidebar** dengan kategori dan buku populer
+- ✅ **Pagination** untuk daftar buku
+- ✅ **View counter** untuk tracking popularitas
+- ✅ **Cover upload** dan **PDF file** support
+- ✅ **Modal Detail Buku** - Klik untuk lihat info lengkap
+
+### 🎛️ Admin Panel - Perpustakaan
+- ✅ **Tab baru** di admin panel untuk manajemen buku
+- ✅ **CRUD lengkap** - Tambah, edit, hapus buku
+- ✅ **Styled upload boxes** - Drag & drop area untuk cover dan PDF
+- ✅ **Display nama file** yang user-friendly (Kategori - Judul.pdf)
+- ✅ **Preview cover** sebelum upload
+
+### 🐛 Bug Fixes
+- ✅ **Fixed:** Mobile menu button tidak hilang saat sidebar aktif
+
+---
+
+## Version 1.1.0 (12 Desember 2025)
+**Update Admin Panel dengan Sidebar Layout & Dashboard Statistik**
 
 ### 🎨 Admin Panel Redesign
 

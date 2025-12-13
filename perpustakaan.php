@@ -27,7 +27,7 @@ $search_pengarang = isset($_GET['pengarang']) ? mysqli_real_escape_string($konek
 // Build WHERE clause
 $where = "1=1";
 if ($search_judul) $where .= " AND (judul LIKE '%$search_judul%' OR pengarang LIKE '%$search_judul%' OR deskripsi LIKE '%$search_judul%')";
-if ($search_kategori) $where .= " AND kategori = '$search_kategori'";
+if ($search_kategori) $where .= " AND LOWER(kategori) = LOWER('$search_kategori')";
 if ($search_pengarang) $where .= " AND pengarang = '$search_pengarang'";
 
 // Pagination
@@ -93,7 +93,6 @@ $icons = ['fa-book', 'fa-lightbulb', 'fa-coins', 'fa-heart', 'fa-flask', 'fa-cal
                     <span>Perpustakaan Digital</span>
                 </a>
                 <ul class="nav-menu">
-                    <li><a href="perpustakaan.php" class="active"><i class="fas fa-home"></i> Beranda</a></li>
                     <li><a href="index.php"><i class="fas fa-globe"></i> Website Utama</a></li>
                     <li><a href="contact.php"><i class="fas fa-envelope"></i> Kontak</a></li>
                 </ul>
@@ -117,10 +116,11 @@ $icons = ['fa-book', 'fa-lightbulb', 'fa-coins', 'fa-heart', 'fa-flask', 'fa-cal
     <!-- Search Section -->
     <section class="search-section">
         <div class="container">
-            <form class="search-form" method="GET" action="perpustakaan.php">
-                <div class="search-input">
+            <form class="search-form" method="GET" action="perpustakaan.php" id="searchFormMain" onsubmit="return validateSearch()">
+                <div class="search-input" id="searchInputWrapper">
                     <i class="fas fa-search"></i>
-                    <input type="text" name="q" value="<?php echo htmlspecialchars($search_judul); ?>" placeholder="Cari judul, pengarang...">
+                    <input type="text" name="q" id="searchField" value="<?php echo htmlspecialchars($search_judul); ?>" placeholder="Cari judul, pengarang...">
+                    <span class="search-error" id="searchError">Masukkan kata kunci pencarian</span>
                 </div>
                 <div class="search-select">
                     <select name="pengarang">
@@ -131,7 +131,7 @@ $icons = ['fa-book', 'fa-lightbulb', 'fa-coins', 'fa-heart', 'fa-flask', 'fa-cal
                     </select>
                 </div>
                 <div class="search-select">
-                    <select name="kategori">
+                    <select name="kategori" id="searchKategori">
                         <option value="">Semua Kategori</option>
                         <?php foreach($categories as $cat): ?>
                         <option value="<?php echo $cat; ?>" <?php if($search_kategori == $cat) echo 'selected'; ?>><?php echo $cat; ?></option>
@@ -264,13 +264,21 @@ $icons = ['fa-book', 'fa-lightbulb', 'fa-coins', 'fa-heart', 'fa-flask', 'fa-cal
                     <div class="sidebar-card">
                         <h3><i class="fas fa-folder"></i> Kategori</h3>
                         <ul class="category-list">
-                            <li><a href="perpustakaan.php" class="<?php if(!$search_kategori) echo 'active'; ?>"><i class="fas fa-chevron-right"></i> Semua <span><?php echo $total_books; ?></span></a></li>
-                            <?php foreach($categories as $cat): ?>
-                            <li><a href="perpustakaan.php?kategori=<?php echo urlencode($cat); ?>" class="<?php if($search_kategori == $cat) echo 'active'; ?>">
-                                <i class="fas fa-chevron-right"></i> <?php echo $cat; ?>
-                                <span><?php echo $category_counts[$cat]; ?></span>
-                            </a></li>
-                            <?php endforeach; ?>
+                            <li class="category-parent">
+                                <a href="javascript:void(0)" class="category-toggle <?php if(!$search_kategori) echo 'active'; ?>" id="categoryToggle" onclick="toggleCategories()">
+                                    <i class="fas fa-chevron-down toggle-icon"></i> Semua <span><?php echo $total_books; ?></span>
+                                </a>
+                                <ul class="subcategories" id="subcategories">
+                                    <?php foreach($categories as $cat): ?>
+                                    <li>
+                                        <a href="perpustakaan.php?kategori=<?php echo urlencode($cat); ?>" class="subcategory-link <?php if($search_kategori == $cat) echo 'active'; ?>">
+                                            <i class="fas fa-tag"></i> <?php echo $cat; ?>
+                                            <span><?php echo $category_counts[$cat]; ?></span>
+                                        </a>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
 
@@ -338,6 +346,162 @@ $icons = ['fa-book', 'fa-lightbulb', 'fa-coins', 'fa-heart', 'fa-flask', 'fa-cal
 
     <!-- Scripts -->
     <script src="js/perpustakaan.js"></script>
+    <script>
+        // Toggle Categories
+        function toggleCategories() {
+            const subcategories = document.getElementById('subcategories');
+            const toggleIcon = document.querySelector('.toggle-icon');
+            
+            if (subcategories.classList.contains('show')) {
+                subcategories.classList.remove('show');
+                toggleIcon.classList.remove('rotated');
+            } else {
+                subcategories.classList.add('show');
+                toggleIcon.classList.add('rotated');
+            }
+        }
+        
+        // Initialize - show categories by default
+        document.addEventListener('DOMContentLoaded', function() {
+            const subcategories = document.getElementById('subcategories');
+            const toggleIcon = document.querySelector('.toggle-icon');
+            if (subcategories && toggleIcon) {
+                subcategories.classList.add('show');
+                toggleIcon.classList.add('rotated');
+            }
+            
+            // Clear error on input
+            const searchField = document.getElementById('searchField');
+            if (searchField) {
+                searchField.addEventListener('input', function() {
+                    document.getElementById('searchInputWrapper').classList.remove('has-error');
+                });
+            }
+        });
+        
+        // Validate Search Form
+        function validateSearch() {
+            const searchField = document.getElementById('searchField');
+            const wrapper = document.getElementById('searchInputWrapper');
+            
+            // Always require search field to have input when clicking search button
+            if (!searchField.value.trim()) {
+                wrapper.classList.add('has-error');
+                searchField.focus();
+                
+                // Auto remove error after 3 seconds
+                setTimeout(() => {
+                    wrapper.classList.remove('has-error');
+                }, 3000);
+                
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <style>
+        /* Toggle Categories */
+        .category-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+        .category-toggle .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+        .category-toggle .toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+        .subcategories {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .subcategories.show {
+            max-height: 500px;
+        }
+        .subcategories li {
+            padding-left: 15px;
+        }
+        .subcategory-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            color: #555;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 4px 0;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+        .subcategory-link:hover {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            color: #004029;
+            transform: translateX(5px);
+        }
+        .subcategory-link.active {
+            background: linear-gradient(135deg, #004029, #006644);
+            color: white;
+        }
+        .subcategory-link i {
+            margin-right: 10px;
+            font-size: 0.85rem;
+        }
+        .subcategory-link span {
+            background: rgba(0, 64, 41, 0.1);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .subcategory-link.active span {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Search Validation Error */
+        .search-input {
+            position: relative;
+        }
+        .search-error {
+            display: none;
+            position: absolute;
+            bottom: -28px;
+            left: 0;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            animation: shakeError 0.4s ease;
+            z-index: 10;
+        }
+        .search-error::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 20px;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 6px solid #e74c3c;
+        }
+        .search-input.has-error .search-error {
+            display: block;
+        }
+        .search-input.has-error input {
+            border-color: #e74c3c !important;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+        }
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+    </style>
 </body>
 
 </html>

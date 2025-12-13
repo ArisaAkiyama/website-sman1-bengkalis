@@ -3,6 +3,7 @@
 # ===== SENSITIF - WAJIB EXCLUDE =====
 setup_admin.php
 koneksi.php
+config.php
 
 # ===== FOLDER UPLOADS =====
 uploads/*

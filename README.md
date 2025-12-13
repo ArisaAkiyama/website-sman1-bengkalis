@@ -21,6 +21,7 @@ Website resmi Sekolah Menengah Atas Negeri 1 Bengkalis, Riau.
 - 👨‍🏫 Profil Guru & Staff
 - 📞 Halaman Kontak dengan form pesan
 - 📚 **Perpustakaan Digital** - Koleksi e-book dengan pencarian
+- 🤖 **AI Chatbot** - Asisten virtual dengan Groq AI
 
 ### Admin Panel
 - 📊 Dashboard dengan statistik lengkap
@@ -36,6 +37,15 @@ Website resmi Sekolah Menengah Atas Negeri 1 Bengkalis, Riau.
 - 📖 Baca online atau download PDF
 - 📊 Statistik buku, pengarang, dan pembaca
 - ⭐ Buku populer berdasarkan views
+- 🏷️ Toggle kategori dengan animasi
+- ⚠️ Validasi form pencarian
+
+### AI Chatbot
+- 🤖 Integrasi Groq AI API
+- 💬 Respons cerdas tentang sekolah dan website
+- 📊 Real-time data dari database (buku, berita, dll)
+- ⚡ Quick replies untuk pertanyaan umum
+- 🔄 Fallback ke FAQ lokal jika API gagal
 
 ### Keamanan
 - 🔐 Login dengan password hashing (bcrypt)
@@ -142,6 +152,12 @@ Website resmi Sekolah Menengah Atas Negeri 1 Bengkalis, Riau.
 ## 🔄 Changelog
 
 Lihat [CHANGELOG.md](CHANGELOG.md) untuk daftar perubahan lengkap.
+
+### v1.3.0 (2025-12-13)
+- ✨ AI Chatbot dengan Groq API integration
+- ✨ Toggle kategori perpustakaan
+- ✨ Validasi form pencarian
+- 🐛 Fixed navigasi kategori perpustakaan
 
 ### v1.2.0 (2025-12-12)
 - ✨ Perpustakaan Digital dengan database integration

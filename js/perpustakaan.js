@@ -72,20 +72,21 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Category Links
+    // Category Links - Only prevent default on toggle, not on actual category links
     document.querySelectorAll('.category-list a').forEach(link => {
         link.addEventListener('click', function (e) {
-            e.preventDefault();
+            // Only prevent default for the toggle button (javascript:void(0))
+            if (this.classList.contains('category-toggle')) {
+                // Toggle button - don't navigate
+                return;
+            }
 
-            // Remove active from all
+            // For actual category links with href, allow navigation
+            // Remove active from all and add to clicked
             document.querySelectorAll('.category-list a').forEach(l => l.classList.remove('active'));
-
-            // Add active to clicked
             this.classList.add('active');
 
-            // Show notification
-            const category = this.textContent.trim().split(' ')[0];
-            showNotification(`Kategori: ${category}`, 'info');
+            // Let the link navigate normally (don't call e.preventDefault())
         });
     });
 

@@ -1,13 +1,15 @@
-# File yang tidak boleh diupload ke GitHub
 
-# ===== SENSITIF - WAJIB EXCLUDE =====
-setup_admin.php
-koneksi.php
+# ===== SENSITIVE FILES =====
 config.php
+koneksi.php
+setup_admin.php
 
 # ===== FOLDER UPLOADS =====
 uploads/*
 !uploads/.gitkeep
+
+# ===== TEMP FILES (Rate Limiting) =====
+temp/
 
 # ===== SYSTEM FILES =====
 .DS_Store

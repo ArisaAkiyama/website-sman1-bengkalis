@@ -44,6 +44,7 @@ Website resmi Sekolah Menengah Atas Negeri 1 Bengkalis, Riau.
 - 🤖 Integrasi Groq AI API
 - 💬 Respons cerdas tentang sekolah dan website
 - 📊 Real-time data dari database (buku, berita, dll)
+- 🔍 **Pencarian Cerdas** - Cari dari semua tabel sekaligus dengan satu pertanyaan
 - ⚡ Quick replies untuk pertanyaan umum
 - 🔄 Fallback ke FAQ lokal jika API gagal
 
@@ -152,6 +153,11 @@ Website resmi Sekolah Menengah Atas Negeri 1 Bengkalis, Riau.
 ## 🔄 Changelog
 
 Lihat [CHANGELOG.md](CHANGELOG.md) untuk daftar perubahan lengkap.
+
+### v1.4.0 (2025-12-16)
+- ✨ **Pencarian Cerdas** - AI chatbot bisa mencari dari semua tabel sekaligus
+- ✨ Smart keyword extraction untuk pemahaman intent
+- ✨ Navigation links ke halaman terkait
 
 ### v1.3.0 (2025-12-13)
 - ✨ AI Chatbot dengan Groq API integration

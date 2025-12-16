@@ -180,5 +180,6 @@ include 'koneksi.php';
 
     <button class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></button>
     <script src="js/main.js?v=2"></script>
+    <?php include 'includes/chatbot_widget.php'; ?>
 </body>
 </html>

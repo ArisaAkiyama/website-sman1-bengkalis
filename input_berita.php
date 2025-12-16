@@ -282,14 +282,21 @@ if (isset($_POST['simpan'])) {
     <div class="sidebar-header">
         <a href="?page=dashboard" class="sidebar-brand">
             <i class="fas fa-graduation-cap"></i>
-            <div>
+            <div class="brand-text">
                 <h1>Admin Panel</h1>
                 <span>SMAN 1 Bengkalis</span>
             </div>
         </a>
+        <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
     </div>
     
     <nav class="sidebar-nav">
+        <!-- Toggle button for collapsed state -->
+        <button class="sidebar-toggle-nav" id="sidebarToggleNav" title="Expand Sidebar">
+            <i class="fas fa-chevron-right"></i>
+        </button>
         <!-- Menu Utama Section -->
         <div class="nav-section open">
             <div class="nav-section-title" onclick="toggleNavSection(this)">
@@ -353,26 +360,54 @@ if (isset($_POST['simpan'])) {
             </div>
         </div>
     </nav>
-    
-    <div class="sidebar-footer">
-        <div class="sidebar-user">
-            <div class="sidebar-user-avatar">
-                <i class="fas fa-user"></i>
-            </div>
-            <div class="sidebar-user-info">
-                <strong><?php echo $_SESSION['username']; ?></strong>
-                <span>Administrator</span>
-            </div>
-        </div>
-        <div class="sidebar-actions">
-            <a href="index.php" target="_blank" class="btn-view-site"><i class="fas fa-external-link-alt"></i> Web</a>
-            <a href="logout.php" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Keluar</a>
-        </div>
-    </div>
 </aside>
 
 <!-- MAIN CONTENT -->
 <main class="main-content">
+    
+    <!-- Admin Top Bar -->
+    <div class="admin-topbar">
+        <div class="topbar-left">
+            <h2 class="page-title">
+                <?php 
+                switch($page) {
+                    case 'dashboard': echo '<i class="fas fa-tachometer-alt"></i> Dashboard'; break;
+                    case 'berita': echo '<i class="fas fa-newspaper"></i> Berita'; break;
+                    case 'prestasi': echo '<i class="fas fa-trophy"></i> Prestasi'; break;
+                    case 'ekskul': echo '<i class="fas fa-basketball-ball"></i> Ekstrakurikuler'; break;
+                    case 'foto': echo '<i class="fas fa-images"></i> Galeri Foto'; break;
+                    case 'pengumuman': echo '<i class="fas fa-bullhorn"></i> Pengumuman'; break;
+                    case 'perpustakaan': echo '<i class="fas fa-book"></i> Perpustakaan'; break;
+                    case 'pesan': echo '<i class="fas fa-inbox"></i> Pesan Masuk'; break;
+                    default: echo '<i class="fas fa-cog"></i> ' . ucfirst($page);
+                }
+                ?>
+            </h2>
+        </div>
+        <div class="topbar-right">
+            <div class="topbar-user-dropdown">
+                <div class="topbar-user" id="userDropdownBtn">
+                    <i class="fas fa-user-circle"></i>
+                    <div class="topbar-user-info">
+                        <strong><?php echo $_SESSION['username']; ?></strong>
+                        <span>Administrator</span>
+                    </div>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </div>
+                <div class="user-dropdown-menu" id="userDropdownMenu">
+                    <a href="index.php" target="_blank" class="dropdown-item">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Lihat Website</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="logout.php" class="dropdown-item logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Keluar</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- Success Alert -->
     <?php if(isset($_GET['success'])): ?>
@@ -548,18 +583,42 @@ if (isset($_POST['simpan'])) {
     $total_data = mysqli_fetch_assoc($count_query)['total'];
     $total_pages = ceil($total_data / $limit);
     
-    // Get data with limit
-    $pesan_query = mysqli_query($koneksi, "SELECT * FROM pesan ORDER BY tanggal_kirim DESC LIMIT $offset, $limit");
+    // Handle search
+    $search_pesan = isset($_GET['search_pesan']) ? trim($_GET['search_pesan']) : '';
+    $search_condition = '';
+    if (!empty($search_pesan)) {
+        $escaped_search = mysqli_real_escape_string($koneksi, $search_pesan);
+        $search_condition = "WHERE nama LIKE '%$escaped_search%' OR email LIKE '%$escaped_search%' OR subjek LIKE '%$escaped_search%' OR pesan LIKE '%$escaped_search%'";
+        // Recalculate total for search
+        $count_search = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM pesan $search_condition");
+        $total_data = mysqli_fetch_assoc($count_search)['total'];
+        $total_pages = ceil($total_data / $limit);
+    }
+    
+    // Get data with limit and search
+    $pesan_query = mysqli_query($koneksi, "SELECT * FROM pesan $search_condition ORDER BY tanggal_kirim DESC LIMIT $offset, $limit");
     ?>
     <div class="card" style="margin-top:0;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; margin-bottom:20px;">
             <h2 style="margin-bottom:0;"><i class="fas fa-envelope"></i> Pesan Masuk <span style="font-weight:400; font-size:0.9rem; color:#666;">(<?php echo $total_data; ?> pesan)</span></h2>
-            <?php if($total_data > 0): ?>
-            <div style="display:flex; gap:10px;">
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <!-- Search Form -->
+                <form action="" method="GET" style="display:flex; gap:8px;">
+                    <input type="hidden" name="page" value="pesan">
+                    <div style="position:relative;">
+                        <input type="text" name="search_pesan" placeholder="Cari pesan..." value="<?php echo htmlspecialchars($search_pesan); ?>" style="padding:10px 15px 10px 40px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem; width:220px; transition: all 0.3s;">
+                        <i class="fas fa-search" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#888;"></i>
+                    </div>
+                    <button type="submit" style="padding:10px 16px; background:linear-gradient(135deg, #004029, #006644); color:white; border:none; border-radius:8px; cursor:pointer; font-size:0.85rem; font-weight:600;"><i class="fas fa-search"></i></button>
+                    <?php if(!empty($search_pesan)): ?>
+                    <a href="?page=pesan" style="padding:10px 14px; background:#f0f0f0; color:#666; border-radius:8px; text-decoration:none; font-size:0.85rem;"><i class="fas fa-times"></i></a>
+                    <?php endif; ?>
+                </form>
+                <?php if($total_data > 0): ?>
                 <a href="?page=pesan&mark_all_read=1" onclick="return confirm('Tandai semua pesan sebagai dibaca?')" style="padding:10px 18px; background:linear-gradient(135deg, #27ae60, #2ecc71); color:white; border-radius:8px; text-decoration:none; font-size:0.85rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;"><i class="fas fa-check-double"></i> Tandai Baca Semua</a>
                 <a href="?page=pesan&delete_all_pesan=1" onclick="return confirm('HAPUS SEMUA PESAN? Tindakan ini tidak dapat dibatalkan!')" style="padding:10px 18px; background:linear-gradient(135deg, #e74c3c, #c0392b); color:white; border-radius:8px; text-decoration:none; font-size:0.85rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;"><i class="fas fa-trash-alt"></i> Hapus Semua</a>
+                <?php endif; ?>
             </div>
-            <?php endif; ?>
         </div>
         <div class="table-responsive">
             <table class="table-admin" style="table-layout:fixed;">
@@ -616,11 +675,13 @@ if (isset($_POST['simpan'])) {
         </div>
         
         <!-- Pagination -->
-        <?php if($total_pages > 1): ?>
+        <?php if($total_pages > 1): 
+        $search_param = !empty($search_pesan) ? '&search_pesan=' . urlencode($search_pesan) : '';
+        ?>
         <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:25px; padding-top:20px; border-top:1px solid #eee;">
             <?php if($pesan_page > 1): ?>
-            <a href="?page=pesan&p=1" style="padding:8px 14px; background:#f0f0f0; border-radius:8px; text-decoration:none; color:#333; font-size:0.9rem;"><i class="fas fa-angle-double-left"></i></a>
-            <a href="?page=pesan&p=<?php echo $pesan_page-1; ?>" style="padding:8px 14px; background:#f0f0f0; border-radius:8px; text-decoration:none; color:#333; font-size:0.9rem;"><i class="fas fa-angle-left"></i></a>
+            <a href="?page=pesan&p=1<?php echo $search_param; ?>" style="padding:8px 14px; background:#f0f0f0; border-radius:8px; text-decoration:none; color:#333; font-size:0.9rem;"><i class="fas fa-angle-double-left"></i></a>
+            <a href="?page=pesan&p=<?php echo $pesan_page-1; ?><?php echo $search_param; ?>" style="padding:8px 14px; background:#f0f0f0; border-radius:8px; text-decoration:none; color:#333; font-size:0.9rem;"><i class="fas fa-angle-left"></i></a>
             <?php endif; ?>
             
             <?php 
@@ -628,12 +689,12 @@ if (isset($_POST['simpan'])) {
             $end_pg = min($total_pages, $pesan_page + 2);
             for($i = $start_pg; $i <= $end_pg; $i++): 
             ?>
-            <a href="?page=pesan&p=<?php echo $i; ?>" style="padding:8px 14px; background:<?php echo $i == $pesan_page ? 'linear-gradient(135deg, #004029, #006644)' : '#f0f0f0'; ?>; color:<?php echo $i == $pesan_page ? 'white' : '#333'; ?>; border-radius:8px; text-decoration:none; font-weight:<?php echo $i == $pesan_page ? '600' : '400'; ?>; font-size:0.9rem;"><?php echo $i; ?></a>
+            <a href="?page=pesan&p=<?php echo $i; ?><?php echo $search_param; ?>" style="padding:8px 14px; background:<?php echo $i == $pesan_page ? 'linear-gradient(135deg, #004029, #006644)' : '#f0f0f0'; ?>; color:<?php echo $i == $pesan_page ? 'white' : '#333'; ?>; border-radius:8px; text-decoration:none; font-weight:<?php echo $i == $pesan_page ? '600' : '400'; ?>; font-size:0.9rem;"><?php echo $i; ?></a>
             <?php endfor; ?>
             
             <?php if($pesan_page < $total_pages): ?>
-            <a href="?page=pesan&p=<?php echo $pesan_page+1; ?>" style="padding:8px 14px; background:#f0f0f0; border-radius:8px; text-decoration:none; color:#333; font-size:0.9rem;"><i class="fas fa-angle-right"></i></a>
-            <a href="?page=pesan&p=<?php echo $total_pages; ?>" style="padding:8px 14px; background:#f0f0f0; border-radius:8px; text-decoration:none; color:#333; font-size:0.9rem;"><i class="fas fa-angle-double-right"></i></a>
+            <a href="?page=pesan&p=<?php echo $pesan_page+1; ?><?php echo $search_param; ?>" style="padding:8px 14px; background:#f0f0f0; border-radius:8px; text-decoration:none; color:#333; font-size:0.9rem;"><i class="fas fa-angle-right"></i></a>
+            <a href="?page=pesan&p=<?php echo $total_pages; ?><?php echo $search_param; ?>" style="padding:8px 14px; background:#f0f0f0; border-radius:8px; text-decoration:none; color:#333; font-size:0.9rem;"><i class="fas fa-angle-double-right"></i></a>
             <?php endif; ?>
         </div>
         <?php endif; ?>
@@ -880,7 +941,7 @@ if (isset($_POST['simpan'])) {
 </main>
 
 <!-- Footer Credit -->
-<footer style="position:fixed; bottom:0; left:220px; right:0; background:linear-gradient(135deg, #004029, #006644); color:white; text-align:center; padding:12px 0; font-size:0.8rem;" id="adminFooter">
+<footer style="position:fixed; bottom:0; left:220px; right:0; background:linear-gradient(135deg, #004029, #006644); color:white; text-align:center; padding:12px 0; font-size:0.8rem; transition: left 0.3s ease;" id="adminFooter">
     &copy; <?php echo date('Y'); ?> SMAN 1 Bengkalis | Admin Panel v1.1
 </footer>
 
@@ -891,6 +952,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     const footer = document.getElementById('adminFooter');
+    
+    // ========== USER DROPDOWN MENU ==========
+    const userDropdownBtn = document.getElementById('userDropdownBtn');
+    const userDropdown = userDropdownBtn ? userDropdownBtn.closest('.topbar-user-dropdown') : null;
+    
+    if (userDropdownBtn && userDropdown) {
+        userDropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('open');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!userDropdown.contains(e.target)) {
+                userDropdown.classList.remove('open');
+            }
+        });
+    }
     
     function toggleSidebar() {
         menuBtn.classList.toggle('active');
@@ -939,6 +1018,89 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    
+    // ========== SIDEBAR TOGGLE (Desktop Collapse) ==========
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.querySelector('.main-content');
+    
+    // Restore collapsed state from localStorage
+    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    if (isCollapsed && window.innerWidth > 768) {
+        sidebar.classList.add('collapsed');
+        if (mainContent) mainContent.classList.add('expanded');
+    }
+    
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Only work on desktop
+            if (window.innerWidth > 768) {
+                sidebar.classList.toggle('collapsed');
+                if (mainContent) mainContent.classList.toggle('expanded');
+                
+                // Update footer position
+                const adminFooter = document.getElementById('adminFooter');
+                if (adminFooter) {
+                    if (sidebar.classList.contains('collapsed')) {
+                        adminFooter.style.left = '70px';
+                    } else {
+                        adminFooter.style.left = '220px';
+                    }
+                }
+                
+                // Save state to localStorage
+                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+                
+                // Change icon
+                const icon = this.querySelector('i');
+                if (sidebar.classList.contains('collapsed')) {
+                    icon.className = 'fas fa-chevron-right';
+                } else {
+                    icon.className = 'fas fa-bars';
+                }
+            }
+        });
+        
+        // Set initial icon based on state
+        if (isCollapsed && window.innerWidth > 768) {
+            sidebarToggle.querySelector('i').className = 'fas fa-chevron-right';
+        }
+    }
+    
+    // Toggle button inside nav (for expanding when collapsed)
+    const sidebarToggleNav = document.getElementById('sidebarToggleNav');
+    if (sidebarToggleNav) {
+        sidebarToggleNav.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('collapsed');
+                if (mainContent) mainContent.classList.remove('expanded');
+                localStorage.setItem('sidebarCollapsed', 'false');
+                
+                // Update footer position
+                const adminFooter = document.getElementById('adminFooter');
+                if (adminFooter) {
+                    adminFooter.style.left = '220px';
+                }
+                
+                // Reset header toggle icon
+                if (sidebarToggle) {
+                    sidebarToggle.querySelector('i').className = 'fas fa-bars';
+                }
+            }
+        });
+    }
+    
+    // Set initial footer position based on collapsed state
+    const adminFooter = document.getElementById('adminFooter');
+    if (adminFooter && isCollapsed && window.innerWidth > 768) {
+        adminFooter.style.left = '70px';
+    }
 });
 </script>
 

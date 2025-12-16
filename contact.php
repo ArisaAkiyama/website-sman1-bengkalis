@@ -140,5 +140,6 @@
     <button class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></button>
     <script src="js/main.js?v=2"></script>
     <script src="js/contact.js?v=1"></script>
+    <?php include 'includes/chatbot_widget.php'; ?>
 </body>
 </html>

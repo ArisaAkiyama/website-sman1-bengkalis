@@ -9,6 +9,36 @@ document.addEventListener('DOMContentLoaded', function () {
     const chatSend = document.getElementById('chatSend');
     const quickReplies = document.querySelectorAll('.quick-reply');
 
+    // Conversation History - in-memory only, cleared on page refresh
+    let conversationHistory = [];
+    const MAX_HISTORY = 10; // Keep last 10 messages (5 exchanges)
+
+    // Clear any old history on page load
+    try {
+        sessionStorage.removeItem('chatHistory');
+    } catch (e) {
+        // Ignore
+    }
+
+    // Save history to sessionStorage
+    function saveHistory() {
+        try {
+            sessionStorage.setItem('chatHistory', JSON.stringify(conversationHistory));
+        } catch (e) {
+            console.warn('Could not save chat history');
+        }
+    }
+
+    // Add to history
+    function addToHistory(role, content) {
+        conversationHistory.push({ role: role, content: content });
+        // Keep only last MAX_HISTORY messages
+        if (conversationHistory.length > MAX_HISTORY) {
+            conversationHistory = conversationHistory.slice(-MAX_HISTORY);
+        }
+        saveHistory();
+    }
+
     // Toggle Chatbot from FAB option
     if (fabChatbot) {
         fabChatbot.addEventListener('click', function (e) {
@@ -43,8 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
     async function sendMessage(message) {
         if (!message.trim()) return;
 
-        // Add user message
+        // Add user message to UI and history
         addMessage(message, 'user');
+        addToHistory('user', message);
 
         // Clear input
         if (chatInput) chatInput.value = '';
@@ -57,19 +88,22 @@ document.addEventListener('DOMContentLoaded', function () {
             const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
             const apiUrl = basePath + 'api/chat.php';
 
-            console.log('Calling API:', apiUrl); // Debug
+            console.log('Calling API with history:', conversationHistory.length, 'messages');
 
-            // Call AI API
+            // Call AI API with conversation history
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message: message })
+                body: JSON.stringify({
+                    message: message,
+                    history: conversationHistory.slice(0, -1) // Send history without the current message
+                })
             });
 
             const text = await response.text();
-            console.log('API Raw Response:', text); // Debug
+            console.log('API Raw Response:', text);
 
             let data;
             try {
@@ -82,10 +116,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             hideTypingIndicator();
-            console.log('API Data:', data); // Debug
 
             if (data.success && data.response) {
                 addMessage(data.response, 'bot');
+                // Add bot response to history
+                addToHistory('assistant', data.response);
             } else if (data.error) {
                 console.error('API Error:', data);
                 addMessage('⚠️ ' + (data.error || 'Terjadi kesalahan'), 'bot');
@@ -140,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
         chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
     }
 
-    // Typing indicator
+    // Typing indicator with text
     function showTypingIndicator() {
         const typingDiv = document.createElement('div');
         typingDiv.className = 'chat-message bot typing';
@@ -151,9 +186,12 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
             <div class="message-content">
                 <div class="typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span class="typing-text">AI sedang berpikir</span>
+                    <span class="typing-dots">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </span>
                 </div>
             </div>
         `;

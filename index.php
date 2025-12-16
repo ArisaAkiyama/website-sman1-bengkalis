@@ -28,7 +28,7 @@ include 'koneksi.php';
     <!-- Main Stylesheet -->
     <link rel="stylesheet" href="css/style.css?v=2">
     <link rel="stylesheet" href="css/fab.css?v=1">
-    <link rel="stylesheet" href="css/chatbot.css?v=4">
+    <link rel="stylesheet" href="css/chatbot.css?v=5">
 </head>
 
 <body>
@@ -643,7 +643,7 @@ include 'koneksi.php';
     <!-- JavaScript -->
     <script src="js/main.js?v=2"></script>
     <script src="js/fab.js?v=1"></script>
-    <script src="js/chatbot.js?v=3"></script>
+    <script src="js/chatbot.js?v=4"></script>
 </body>
 
 </html>

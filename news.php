@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css?v=2">
     <link rel="stylesheet" href="css/fab.css?v=1">
-    <link rel="stylesheet" href="css/chatbot.css?v=4">
+    <link rel="stylesheet" href="css/chatbot.css?v=5">
 </head>
 <body>
     <div class="top-bar"><div class="container"><div class="top-bar-left"><a href="#" class="top-bar-item"><i class="fas fa-calendar-alt"></i><span>Senin - Jumat: 07.00 - 15.00 WIB</span></a></div><div class="top-bar-right"><a href="tel:+62766123456" class="top-bar-item"><i class="fas fa-phone"></i> (0766) 21234</a><a href="mailto:info@sman1bengkalis.sch.id" class="top-bar-item"><i class="fas fa-envelope"></i> info@sman1bengkalis.sch.id</a><div class="top-bar-social"><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-youtube"></i></a></div></div></div></div>
@@ -159,6 +159,6 @@
 
     <script src="js/main.js?v=2"></script>
     <script src="js/fab.js?v=1"></script>
-    <script src="js/chatbot.js?v=3"></script>
+    <script src="js/chatbot.js?v=4"></script>
 </body>
 </html>

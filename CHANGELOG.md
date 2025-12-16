@@ -1,5 +1,32 @@
 # 📋 CHANGELOG - Website SMAN 1 Bengkalis
 
+## Version 1.4.0 (16 Desember 2025)
+**AI Chatbot - Smart Search Feature**
+
+---
+
+### 🔍 Pencarian Cerdas (Smart Search)
+- ✅ **Unified Search** - Mencari dari semua tabel sekaligus (berita, pengumuman, prestasi, buku, ekskul, foto)
+- ✅ **Smart Keyword Extraction** - AI memahami intent user meski pertanyaan tidak terstruktur
+- ✅ **Kategori Hasil** - Hasil ditampilkan dengan label emoji (📰 Berita, 📚 Buku, 🏆 Prestasi, dll)
+- ✅ **Navigation Links** - Mengarahkan user ke halaman terkait
+- ✅ **Fallback Search** - Jika tidak ada hasil persis, coba dengan keyword lain
+
+### 🔧 File yang Dimodifikasi
+- ✅ `api/chat.php` - Ditambah fungsi `unifiedSearch()` dan `extractKeywords()`
+- ✅ `config.php` - System prompt diupdate untuk handling smart search
+
+### 💬 Contoh Penggunaan
+```
+User: "cari info tentang olimpiade"
+AI: Mencari di semua tabel dan menampilkan hasil dari berita, prestasi, ekskul yang relevan
+
+User: "ada apa tentang pramuka?"
+AI: Menampilkan ekskul pramuka, prestasi terkait, dan link ke halaman
+```
+
+---
+
 ## Version 1.3.0 (13 Desember 2025)
 **AI Chatbot Integration & Perpustakaan Enhancement**
 

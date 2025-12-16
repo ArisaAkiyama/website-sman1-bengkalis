@@ -245,6 +245,205 @@ body {
     padding: 25px;
     min-height: 100vh;
     padding-bottom: 60px;
+    transition: margin-left 0.3s ease;
+}
+
+/* Admin Top Bar */
+.admin-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+}
+
+.topbar-left .page-title {
+    font-size: 1.4rem;
+    color: #2c3e50;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.topbar-left .page-title i {
+    color: #004029;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar-user>i {
+    font-size: 2.2rem;
+    color: #004029;
+}
+
+.topbar-user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar-user-info strong {
+    font-size: 0.95rem;
+    color: #2c3e50;
+}
+
+.topbar-user-info span {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* Topbar Actions */
+.topbar-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.topbar-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.topbar-btn.btn-web {
+    background: linear-gradient(135deg, #004029, #006644);
+    color: white;
+}
+
+.topbar-btn.btn-web:hover {
+    background: linear-gradient(135deg, #003020, #005533);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 64, 41, 0.3);
+}
+
+.topbar-btn.btn-logout {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+}
+
+.topbar-btn.btn-logout:hover {
+    background: #e74c3c;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* User Dropdown Menu */
+.topbar-user-dropdown {
+    position: relative;
+}
+
+.topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.topbar-user:hover {
+    background: rgba(0, 64, 41, 0.05);
+}
+
+.topbar-user>i.fa-user-circle {
+    font-size: 2.2rem;
+    color: #004029;
+}
+
+.topbar-user .dropdown-arrow {
+    font-size: 0.7rem;
+    color: #888;
+    transition: transform 0.3s ease;
+    margin-left: 5px;
+}
+
+.topbar-user-dropdown.open .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.user-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    padding: 8px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.topbar-user-dropdown.open .user-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    color: #333;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background: rgba(0, 64, 41, 0.08);
+    color: #004029;
+}
+
+.dropdown-item i {
+    width: 18px;
+    text-align: center;
+    color: #666;
+}
+
+.dropdown-item:hover i {
+    color: #004029;
+}
+
+.dropdown-item.logout {
+    color: #e74c3c;
+}
+
+.dropdown-item.logout i {
+    color: #e74c3c;
+}
+
+.dropdown-item.logout:hover {
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #eee;
+    margin: 6px 0;
 }
 
 /* Top Bar */
@@ -802,5 +1001,222 @@ textarea.form-control {
 
     .sidebar.active {
         transform: translateX(0);
+    }
+}
+
+/* ========== SIDEBAR TOGGLE BUTTON (Desktop) ========== */
+.sidebar-toggle-btn {
+    display: none;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.sidebar-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-toggle-btn i {
+    font-size: 0.9rem;
+}
+
+/* Toggle button inside nav (only visible when collapsed) */
+.sidebar-toggle-nav {
+    display: none;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    height: 42px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    margin: 0 10px 5px 10px;
+    width: calc(100% - 20px);
+}
+
+.sidebar-toggle-nav:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.sidebar-toggle-nav i {
+    font-size: 1.1rem;
+}
+
+/* Show toggle button only on desktop */
+@media (min-width: 769px) {
+    .sidebar-toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .sidebar-brand {
+        flex: 1;
+        overflow: hidden;
+    }
+}
+
+/* ========== COLLAPSED SIDEBAR STATE ========== */
+@media (min-width: 769px) {
+    .sidebar.collapsed {
+        width: 70px;
+    }
+
+    .sidebar.collapsed .brand-text {
+        display: none;
+    }
+
+    .sidebar.collapsed .sidebar-brand {
+        justify-content: center;
+    }
+
+    .sidebar.collapsed .sidebar-brand i {
+        font-size: 1.8rem;
+    }
+
+    .sidebar.collapsed .sidebar-toggle-btn {
+        position: fixed;
+        left: 15px;
+        top: 80px;
+        z-index: 101;
+        background: rgba(255, 255, 255, 0.15);
+        width: 40px;
+        height: 40px;
+    }
+
+    .sidebar.collapsed .sidebar-header {
+        justify-content: center;
+        position: relative;
+    }
+
+    .sidebar.collapsed .sidebar-header .sidebar-toggle-btn {
+        display: none;
+    }
+
+    .sidebar.collapsed .sidebar-toggle-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sidebar.collapsed .nav-section-title {
+        padding: 10px;
+        justify-content: center;
+        margin: 0 10px;
+        width: calc(100% - 20px);
+        height: 42px;
+    }
+
+    .sidebar.collapsed .nav-section-title span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+    }
+
+    .sidebar.collapsed .nav-section-title span i {
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    /* Hide text in nav section title */
+    .sidebar.collapsed .nav-section-title span::after {
+        display: none;
+    }
+
+    .sidebar.collapsed .nav-section-title>span {
+        font-size: 0;
+    }
+
+    .sidebar.collapsed .nav-section-title>span i {
+        font-size: 1.1rem;
+    }
+
+    .sidebar.collapsed .nav-section-arrow {
+        display: none;
+    }
+
+    .sidebar.collapsed .nav-section-links a {
+        padding: 12px;
+        justify-content: center;
+    }
+
+    .sidebar.collapsed .nav-section-links a span {
+        display: none;
+    }
+
+    .sidebar.collapsed .nav-section-links a i {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    .sidebar.collapsed .nav-badge {
+        display: none;
+    }
+
+    /* Sidebar footer collapsed */
+    .sidebar.collapsed .sidebar-footer {
+        padding: 10px 5px;
+    }
+
+    .sidebar.collapsed .sidebar-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .sidebar.collapsed .sidebar-actions a {
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sidebar.collapsed .sidebar-actions a span {
+        display: none;
+    }
+
+    .sidebar.collapsed .sidebar-actions a i {
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    /* Main content adjustment */
+    .main-content.expanded {
+        margin-left: 70px;
+    }
+
+    /* Tooltip for collapsed items */
+    .sidebar.collapsed .sidebar-nav a {
+        position: relative;
+    }
+
+    .sidebar.collapsed .sidebar-nav a:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #333;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        z-index: 1000;
+        margin-left: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 }
